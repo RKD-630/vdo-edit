@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T2V Cinematic Studio Pro</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- GIF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+</head>
+<body>
+    <div id="app-background" class="app-background"></div>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+        <div class="header-left">
+            <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo">T2V <span>STUDIO PRO</span></div>
+        </div>
+        
+        <div class="header-settings">
+            <div class="setting-item">
+                <i class="fa-solid fa-expand"></i>
+                <select id="video-ratio-btn" class="header-select">
+                    <option value="9:16">Portrait (9:16)</option>
+                    <option value="16:9">Landscape (16:9)</option>
+                    <option value="1:1">Square (1:1)</option>
+                </select>
+            </div>
+            <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
+                <i class="fa-solid fa-file-export"></i>
+                <select id="export-format" class="header-select" title="Export Format">
+                    <option value="webm">WebM</option>
+                    <option value="mp4">MP4</option>
+                    <option value="gif">GIF</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="header-btn secondary" id="new-project-btn" title="New Project">
+                <i class="fa-solid fa-rotate-right"></i> <span>NEW</span>
+            </button>
+            <button class="btn btn-accent" id="finish-and-save-btn" style="width: auto; padding: 0.6rem 1rem; border-radius: 10px;">
+                <i class="fa-solid fa-cloud-arrow-down"></i> <span>FINISH</span>
+            </button>
+        </div>
+    </header>
+     <!-- TOP WORKSPACE -->
+        <div class="top-workspace">
+            <!-- Left Sidebar: Inspector / Properties -->
+            <aside class="sidebar glass-panel" id="sidebar">
+                <header class="sidebar-header">
+                    <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> T2V STUDIO</h2>
+                    <p>Professional HD Video Editor</p>
+                </header>
+                
+                <div class="controls-wrapper" id="properties-panel">
+                    
+                    <!-- Empty State -->
+                    <div id="prop-empty" class="prop-section active">
+                        <div style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
+                            <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                                <i class="fa-solid fa-mouse-pointer" style="font-size: 1.5rem; opacity: 0.5;"></i>
+                            </div>
+                            <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">No Selection</h4>
+                            <p style="font-size: 0.75rem; line-height: 1.5;">Select a clip on the timeline to reveal its properties and start editing.</p>
+                        </div>
+                    </div>
+                
+                    <!-- MEDIA / BACKGROUND SECION (Pages) -->
+                    <div id="prop-media" class="prop-section">
+                        <div class="prop-header">
+                            <h3><i class="fa-solid fa-image"></i> Scene Background</h3>
+                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Background Type</label>
+                            <select id="bg-type" class="input-field styled-select">
+                                <option value="color">Solid Color</option>
+                                <option value="gradient">Gradient</option>
+                                <option value="image">Image Upload</option>
+                                <option value="video">Video Upload</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group" id="bg-color-group">
+                            <label>Background Color</label>
+                            <div class="flex-row">
+                                <input type="color" id="bg-color-val" value="#1a1a2e">
+                                <input type="text" id="bg-color-hex" class="input-field" value="#1a1a2e" style="font-family: monospace; font-size: 0.75rem;">
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="bg-grad-group" style="display:none;">
+                            <label>Gradient Palette</label>
+                            <div class="flex-row">
+                                <input type="color" id="bg-grad-1" value="#10b981">
+                                <input type="color" id="bg-grad-2" value="#3b82f6">
+                            </div>
+                            <div class="flex-spaced" style="margin-top: 0.5rem;">
+                                <label>Angle: <span id="grad-angle-val">135</span>&deg;</label>
+                                <input type="range" id="bg-grad-angle" min="0" max="360" value="135" style="width: 60%;">
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="bg-upload-group" style="display:none;">
+                            <label class="btn btn-secondary file-upload-btn w-100">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
+                                <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
+                            </label>
+                            <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
+                        </div>
+                    </div>
+
+                    <!-- TEXT SECTION -->
+                    <div id="prop-text" class="prop-section">
+                        <div class="prop-header">
+                            <h3><i class="fa-solid fa-font"></i> Text Content</h3>
+                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        
+                        <div class="text-editor-container">
+                             <textarea id="text-content" placeholder="Type your text here..."></textarea>
+                             
+                             <div class="icon-picker" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
+                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-star"><i class="fa-solid fa-star"></i></button>
+                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></button>
+                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-fire"><i class="fa-solid fa-fire"></i></button>
+                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></button>
+                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-check"><i class="fa-solid fa-check"></i></button>
+                             </div>
+                        </div>
+
+                        <div class="text-settings-scroll" style="margin-top: 1rem; flex-shrink: 0;">
+                            <div class="control-group">
+                                <label>Typography</label>
+                                <select id="text-font" class="input-field styled-select" style="margin-bottom: 0.5rem;">
+                                    <option value="'Outfit', sans-serif">Outfit (Modern)</option>
+                                    <option value="'Inter', sans-serif">Inter (Clean)</option>
+                                    <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+                                </select>
+                                
+                                <div class="flex-spaced">
+                                    <div class="flex-row">
+                                        <input type="color" id="text-color" value="#ffffff" title="Text Color">
+                                        <input type="color" id="text-bg-color" value="#000000" title="Background Color">
+                                    </div>
+                                    <div class="toggle-group" style="flex: 1; margin-left: 0.75rem;">
+                                        <button class="style-btn" id="btn-bold"><i class="fa-solid fa-bold"></i></button>
+                                        <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="flex-spaced">
+                                    <label>Font Size</label>
+                                    <span id="text-size-val" style="font-size: 0.75rem; color: var(--accent);">36px</span>
+                                </div>
+                                <input type="range" id="text-size" min="10" max="200" value="36">
+                            </div>
+
+                            <div class="control-group">
+                                <label>Visual Effects</label>
+                                <select id="text-effect" class="input-field styled-select">
+                                    <option value="none">Standard</option>
+                                    <option value="glow">Neon Glow</option>
+                                    <option value="shadow">Drop Shadow</option>
+                                    <option value="outline">Text Outline</option>
+                                    <option value="fade-scale">Fade + Scale</option>
+                                    <option value="staggered-slide">Staggered Slide</option>
+                                    <option value="scroll-left">Scroll Left</option>
+                                    <option value="scroll-right">Scroll Right</option>
+                                    <option value="scroll-up">Scroll Up</option>
+                                    <option value="scroll-down">Scroll Down</option>
+                                    <option value="marquee-left">Marquee (Loop) L</option>
+                                    <option value="marquee-right">Marquee (Loop) R</option>
+                                </select>
+                            </div>
+
+                            <div id="effect-settings" class="control-group" style="display: none;">
+                                <div class="flex-spaced">
+                                    <label>Effect Speed</label>
+                                    <span id="effect-speed-val" style="font-size: 0.75rem; color: var(--accent);">5</span>
+                                </div>
+                                <input type="range" id="effect-speed" min="1" max="20" value="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AUDIO SECTION -->
+                    <div id="prop-audio" class="prop-section">
+                        <div class="prop-header">
+                            <h3><i class="fa-solid fa-music"></i> Audio Track</h3>
+                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="control-group">
+                            <label class="btn btn-secondary file-upload-btn w-100">
+                                <i class="fa-solid fa-file-audio"></i> Choose Audio File
+                                <input type="file" id="audio-file-upload" accept="audio/*" hidden>
+                            </label>
+                            <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
+                        </div>
+                        <div class="control-group">
+                            <div class="flex-spaced">
+                                <label>Master Volume</label>
+                                <span id="audio-vol-val" style="font-size: 0.75rem; color: var(--accent);">100%</span>
+                            </div>
+                            <input type="range" id="audio-vol" min="0" max="100" value="100">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Sidebar Footer Actions Removed based on request -->
+            </aside>
+
+            <!-- Center/Right: Video Preview Panel -->
+            <main class="preview-area">
+                <div class="preview-header">
+                    <div class="status-indicator"><span class="dot active"></span> LIVE PREVIEW</div>
+                    <div class="tl-time-counter" id="player-time-display">00:00.0</div>
+                </div>
+                
+                <div class="video-wrapper">
+                    <div id="dynamic-video-frame" class="video-frame">
+                        <!-- Background layer -->
+                        <div id="frame-bg" class="frame-layer"></div>
+                        <!-- Text/Objects layer -->
+                        <div id="frame-objects" class="frame-layer"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- BOTTOM TIMELINE -->
+        <div class="bottom-timeline">
+            <div class="timeline-header">
+                <div class="tl-tools left">
+                    <button class="icon-btn" id="tl-play"><i class="fa-solid fa-play"></i></button>
+                    <span id="tl-time-counter" style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent);">00:00 / 00:20</span>
+                </div>
+                <div class="tl-tools center">
+                    <button class="btn btn-primary tl-add-btn" id="add-media-clip-btn" title="Add Scene"><i class="fa-solid fa-image"></i> <span>Scene</span></button>
+                    <button class="btn btn-primary tl-add-btn" id="add-text-clip-btn" title="Add Text"><i class="fa-solid fa-font"></i> <span>Text</span></button>
+                    <button class="btn btn-primary tl-add-btn" id="add-audio-clip-btn" title="Add Audio"><i class="fa-solid fa-music"></i> <span>Audio</span></button>
+                    <button class="btn btn-secondary tl-add-btn" id="tl-delete-btn" style="border-color: #ef4444; color: #ef4444; display: none;" title="Delete Selected Clip">
+                        <i class="fa-solid fa-trash-can"></i> <span>Delete</span>
+                    </button>
+                </div>
+                <div class="tl-tools right">
+                    <i class="fa-solid fa-minus" style="font-size:0.7rem; color: var(--text-muted);"></i>
+                    <input type="range" id="tl-zoom" min="20" max="150" value="50" style="width: 80px;">
+                    <i class="fa-solid fa-plus" style="font-size:0.7rem; color: var(--text-muted);"></i>
+                </div>
+            </div>
+
+            <div class="timeline-body">
+                <div class="track-labels">
+                    <div class="t-label">SCENES</div>
+                    <div class="t-label">TEXT</div>
+                    <div class="t-label">AUDIO</div>
+                </div>
+                
+                <div class="tracks-viewport" id="tracks-viewport">
+                    <div class="ruler-container" id="tl-ruler">
+                        <div class="playhead" id="playhead"></div>
+                        <div class="playhead-handle" id="playhead-handle"></div>
+                    </div>
+                    
+                    <div class="tracks-container">
+                        <div class="tl-track" id="track-media" data-track="media">
+                            <div class="track-grid"></div>
+                            <div class="track-content" id="content-media"></div>
+                        </div>
+                        <div class="tl-track" id="track-text" data-track="text">
+                            <div class="track-grid"></div>
+                            <div class="track-content" id="content-text"></div>
+                        </div>
+                        <div class="tl-track" id="track-audio" data-track="audio">
+                            <div class="track-grid"></div>
+                            <div class="track-content" id="content-audio"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Render Overlay -->
+    <div id="generation-overlay" class="overlay hidden">
+        <div class="loader-content glass-panel" style="border-radius: 20px; padding: 3rem;">
+            <div class="spinner"></div>
+            <h2 id="generation-text" style="font-size: 1.2rem; font-weight: 700; margin-top: 1rem;">Rendering Project...</h2>
+            <p id="generation-p" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2rem;">Please keep this tab active for fastest rendering.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div style="display: flex; gap: 1rem; width: 100%; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary hidden" id="close-overlay-btn" style="width: auto;">DONE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
