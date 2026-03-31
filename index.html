@@ -21,7 +21,7 @@
         <header class="app-header">
         <div class="header-left">
             <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo">T2V <span>STUDIO PRO</span></div>
+            <div class="logo">T2V </div>
         </div>
         
         <div class="header-settings">
@@ -32,6 +32,11 @@
                     <option value="16:9">Landscape (16:9)</option>
                     <option value="1:1">Square (1:1)</option>
                 </select>
+            </div>
+            <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
+                <i class="fa-solid fa-clock"></i>
+                <input type="number" id="timeline-duration" class="header-select" value="20" min="1" max="300" style="width: 50px; background: transparent; border: none; font-family: monospace;">
+                <span style="font-size: 0.7rem; color: var(--text-muted); margin-left: -0.5rem;">s</span>
             </div>
             <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
                 <i class="fa-solid fa-file-export"></i>
@@ -45,17 +50,18 @@
 
         <div class="header-actions">
             <button class="header-btn secondary" id="new-project-btn" title="New Project">
-                <i class="fa-solid fa-rotate-right"></i> <span>NEW</span>
+                <i class="fa-solid fa-rotate-right"></i> <span></span>
             </button>
             <button class="btn btn-accent" id="finish-and-save-btn" style="width: auto; padding: 0.6rem 1rem; border-radius: 10px;">
-                <i class="fa-solid fa-cloud-arrow-down"></i> <span>FINISH</span>
+                <i class="fa-solid fa-cloud-arrow-down"></i> <span></span>
             </button>
         </div>
     </header>
      <!-- TOP WORKSPACE -->
         <div class="top-workspace">
             <!-- Left Sidebar: Inspector / Properties -->
-            <aside class="sidebar glass-panel" id="sidebar">
+           
+          <aside class="sidebar glass-panel" id="sidebar">
                 <header class="sidebar-header">
                     <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> T2V STUDIO</h2>
                     <p>Professional HD Video Editor</p>
@@ -113,7 +119,7 @@
 
                         <div class="control-group" id="bg-upload-group" style="display:none;">
                             <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose File
                                 <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
                             </label>
                             <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
@@ -157,6 +163,10 @@
                                         <button class="style-btn" id="btn-bold"><i class="fa-solid fa-bold"></i></button>
                                         <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
                                     </div>
+                                </div>
+                                <div class="flex-row" style="margin-top: 0.5rem;">
+                                    <input type="checkbox" id="text-bg-transparent">
+                                    <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent Background</label>
                                 </div>
                             </div>
 
@@ -204,7 +214,7 @@
                         </div>
                         <div class="control-group">
                             <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-file-audio"></i> Choose Audio File
+                                <i class="fa-solid fa-file-audio"></i>  Audio File
                                 <input type="file" id="audio-file-upload" accept="audio/*" hidden>
                             </label>
                             <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
@@ -252,6 +262,9 @@
                     <button class="btn btn-primary tl-add-btn" id="add-media-clip-btn" title="Add Scene"><i class="fa-solid fa-image"></i> <span>Scene</span></button>
                     <button class="btn btn-primary tl-add-btn" id="add-text-clip-btn" title="Add Text"><i class="fa-solid fa-font"></i> <span>Text</span></button>
                     <button class="btn btn-primary tl-add-btn" id="add-audio-clip-btn" title="Add Audio"><i class="fa-solid fa-music"></i> <span>Audio</span></button>
+                    <button class="btn btn-secondary tl-add-btn" id="tl-split-btn" title="Split Selected Clip" style="color: var(--accent); border-color: var(--accent);">
+                        <i class="fa-solid fa-scissors"></i> <span>Split</span>
+                    </button>
                     <button class="btn btn-secondary tl-add-btn" id="tl-delete-btn" style="border-color: #ef4444; color: #ef4444; display: none;" title="Delete Selected Clip">
                         <i class="fa-solid fa-trash-can"></i> <span>Delete</span>
                     </button>
@@ -262,14 +275,9 @@
                     <i class="fa-solid fa-plus" style="font-size:0.7rem; color: var(--text-muted);"></i>
                 </div>
             </div>
-
-            <div class="timeline-body">
-                <div class="track-labels">
-                    <div class="t-label">SCENES</div>
-                    <div class="t-label">TEXT</div>
-                    <div class="t-label">AUDIO</div>
-                </div>
-                
+<h5>
+          
+               
                 <div class="tracks-viewport" id="tracks-viewport">
                     <div class="ruler-container" id="tl-ruler">
                         <div class="playhead" id="playhead"></div>

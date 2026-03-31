@@ -70,8 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const audioFileUpload = document.getElementById('audio-file-upload');
     const audioFileName = document.getElementById('audio-file-name');
     const audioVol = document.getElementById('audio-vol');
+    const textBgTrans = document.getElementById('text-bg-transparent');
 
     const videoRatioBtn = document.getElementById('video-ratio-btn');
+    const timelineDurationInput = document.getElementById('timeline-duration');
+    const tlSplitBtn = document.getElementById('tl-split-btn');
     const finishBtn = document.getElementById('finish-and-save-btn');
     const exportFormat = document.getElementById('export-format');
     const overlay = document.getElementById('generation-overlay');
@@ -107,6 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (videoRatioBtn) videoRatioBtn.addEventListener('change', (e) => { APP.ratio = e.target.value; updateRatioUI(); renderVideoFrame(); });
         
         if (tlZoom) tlZoom.addEventListener('input', (e) => { APP.zoom = parseInt(e.target.value); updateRuler(); renderTimelineClips(); updatePlayheadUI(); });
+        
+        if (timelineDurationInput) timelineDurationInput.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value);
+            if (val > 0) {
+                APP.duration = val;
+                updateRuler();
+                seekTo(Math.min(APP.time, APP.duration));
+                renderTimelineClips();
+            } else {
+                e.target.value = APP.duration;
+            }
+        });
+
+        if (tlSplitBtn) tlSplitBtn.addEventListener('click', splitSelectedClip);
 
         const startPlayheadDrag = (e) => {
             e.preventDefault();
@@ -140,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (textFont) textFont.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.font = e.target.value; renderVideoFrame(); } });
         if (textSize) textSize.addEventListener('input', (e) => { if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = e.target.value + 'px'; const c = getClip(APP.selectedClipId); if(c) { c.size = parseInt(e.target.value); renderVideoFrame(); } });
         if (textColor) textColor.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.color = e.target.value; renderVideoFrame(); } });
-        if (textBgColor) textBgColor.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.bgColor = e.target.value; renderVideoFrame(); } });
+        if (textBgColor) textBgColor.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.bgColor = e.target.value; if(textBgTrans) textBgTrans.checked = false; renderVideoFrame(); } });
+        if (textBgTrans) textBgTrans.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.bgColor = e.target.checked ? 'transparent' : textBgColor.value; renderVideoFrame(); } });
         if (textEffect) textEffect.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.effect = e.target.value; updateEffectSettingsVisibility(); renderVideoFrame(); } });
         if (effectSpeed) effectSpeed.addEventListener('input', (e) => { if(document.getElementById('effect-speed-val')) document.getElementById('effect-speed-val').innerText = e.target.value; const c = getClip(APP.selectedClipId); if(c) { c.speed = parseInt(e.target.value); renderVideoFrame(); } });
         
@@ -178,6 +196,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function splitSelectedClip() {
+        if (!APP.selectedClipId) return;
+        const clip = getClip(APP.selectedClipId);
+        if (clip && APP.time > clip.start && APP.time < clip.end) {
+            const oldEnd = clip.end;
+            const newDuration = APP.time - clip.start;
+            
+            // Create a duplicate with the same properties but different start/end
+            const splitId = 'clip_' + Math.random().toString(36).substr(2, 9);
+            const splitClip = JSON.parse(JSON.stringify(clip));
+            
+            // Note: JSON stringify loses object references (images/audio). We need to copy them manually.
+            splitClip.id = splitId;
+            splitClip.start = APP.time;
+            splitClip.end = oldEnd;
+            
+            // Update the original clip ending
+            clip.end = APP.time;
+            
+            // For audio/media objects, some extra care is needed but for state-base it's enough.
+            // If they are media/audio, clone reference
+            if (clip.videoObj) splitClip.videoObj = clip.videoObj;
+            if (clip.imgObj) splitClip.imgObj = clip.imgObj;
+            if (clip.audioObj) {
+                splitClip.audioObj = new Audio(clip.audioObj.src);
+                splitClip.audioObj.volume = clip.audioObj.volume;
+            }
+            
+            APP.tracks[clip.track].push(splitClip);
+            selectClip(splitId, clip.track);
+            renderTimelineClips();
+            renderVideoFrame();
+        }
+    }
+
     function updateRatioUI() { if (!videoFrame) return; const r = APP.ratio.split(':'); videoFrame.style.aspectRatio = `${r[0]} / ${r[1]}`; }
     function updateRuler() { const totalPixels = APP.duration * APP.zoom; document.querySelectorAll('.tracks-container, .ruler-container').forEach(el => { el.style.width = `${totalPixels}px`; el.style.minWidth = `${totalPixels}px`; }); const gridBg = `repeating-linear-gradient(90deg, transparent, transparent ${APP.zoom - 1}px, rgba(255,255,255,0.03) ${APP.zoom}px)`; document.querySelectorAll('.track-grid').forEach(el => el.style.background = gridBg); }
     function seekTo(time) { APP.time = Math.max(0, Math.min(APP.duration, time)); updatePlayheadUI(); renderVideoFrame(); if (APP.playing) syncAudioTime(); }
@@ -197,7 +250,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!id) { if(propEmpty) propEmpty.classList.add('active'); return; }
         const clip = getClip(id);
-        if (track === 'media') { if(propMedia) propMedia.classList.add('active'); bgType.value = clip.bgType || 'color'; updateMediaInspectorVisibility(); if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; if(bgColorHex) bgColorHex.value = bgColorVal.value; if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; if(bgGradAngle) bgGradAngle.value = clip.angle || 135; if(bgFileName) bgFileName.innerText = clip.fileName || ""; } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; textFont.value = clip.font || "'Outfit', sans-serif"; textSize.value = clip.size || 36; if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = textSize.value + 'px'; textColor.value = clip.color || "#ffffff"; if(textBgColor) textBgColor.value = clip.bgColor === 'transparent' ? '#000000' : clip.bgColor; textEffect.value = clip.effect || 'none'; 
+        if (track === 'media') { if(propMedia) propMedia.classList.add('active'); bgType.value = clip.bgType || 'color'; updateMediaInspectorVisibility(); if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; if(bgColorHex) bgColorHex.value = bgColorVal.value; if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; if(bgGradAngle) bgGradAngle.value = clip.angle || 135; if(bgFileName) bgFileName.innerText = clip.fileName || ""; } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; textFont.value = clip.font || "'Outfit', sans-serif"; textSize.value = clip.size || 36; if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = textSize.value + 'px'; textColor.value = clip.color || "#ffffff";
+        if(textBgColor) textBgColor.value = (clip.bgColor === 'transparent' || !clip.bgColor) ? '#000000' : clip.bgColor;
+        if(textBgTrans) textBgTrans.checked = clip.bgColor === 'transparent';
+        textEffect.value = clip.effect || 'none'; 
         updateEffectSettingsVisibility();
         if(effectSpeed) { effectSpeed.value = clip.speed || 5; if(document.getElementById('effect-speed-val')) document.getElementById('effect-speed-val').innerText = effectSpeed.value; }
         btnBold.classList.toggle('active', clip.bold); btnItalic.classList.toggle('active', clip.italic); } else if (track === 'audio') { if(propAudio) propAudio.classList.add('active'); audioFileName.innerText = clip.fileName || ""; audioVol.value = clip.volume || 100; } }
