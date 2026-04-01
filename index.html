@@ -21,7 +21,7 @@
         <header class="app-header">
         <div class="header-left">
             <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo">T2V </div>
+            <div class="logo">T2V <span>STUDIO PRO</span></div>
         </div>
         
         <div class="header-settings">
@@ -50,18 +50,17 @@
 
         <div class="header-actions">
             <button class="header-btn secondary" id="new-project-btn" title="New Project">
-                <i class="fa-solid fa-rotate-right"></i> <span></span>
+                <i class="fa-solid fa-rotate-right"></i> <span>NEW</span>
             </button>
             <button class="btn btn-accent" id="finish-and-save-btn" style="width: auto; padding: 0.6rem 1rem; border-radius: 10px;">
-                <i class="fa-solid fa-cloud-arrow-down"></i> <span></span>
+                <i class="fa-solid fa-cloud-arrow-down"></i> <span>FINISH</span>
             </button>
         </div>
     </header>
      <!-- TOP WORKSPACE -->
         <div class="top-workspace">
             <!-- Left Sidebar: Inspector / Properties -->
-           
-          <aside class="sidebar glass-panel" id="sidebar">
+            <aside class="sidebar glass-panel" id="sidebar">
                 <header class="sidebar-header">
                     <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> T2V STUDIO</h2>
                     <p>Professional HD Video Editor</p>
@@ -119,7 +118,7 @@
 
                         <div class="control-group" id="bg-upload-group" style="display:none;">
                             <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose File
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
                                 <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
                             </label>
                             <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
@@ -181,12 +180,19 @@
                             <div class="control-group">
                                 <label>Visual Effects</label>
                                 <select id="text-effect" class="input-field styled-select">
-                                    <option value="none">Standard</option>
+                                    <option value="none">Standard Style</option>
                                     <option value="glow">Neon Glow</option>
                                     <option value="shadow">Drop Shadow</option>
                                     <option value="outline">Text Outline</option>
                                     <option value="fade-scale">Fade + Scale</option>
                                     <option value="staggered-slide">Staggered Slide</option>
+                                </select>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Text Animation</label>
+                                <select id="text-animation" class="input-field styled-select">
+                                    <option value="none">No Animation</option>
                                     <option value="scroll-left">Scroll Left</option>
                                     <option value="scroll-right">Scroll Right</option>
                                     <option value="scroll-up">Scroll Up</option>
@@ -214,7 +220,7 @@
                         </div>
                         <div class="control-group">
                             <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-file-audio"></i>  Audio File
+                                <i class="fa-solid fa-file-audio"></i> Choose Audio File
                                 <input type="file" id="audio-file-upload" accept="audio/*" hidden>
                             </label>
                             <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
@@ -275,9 +281,14 @@
                     <i class="fa-solid fa-plus" style="font-size:0.7rem; color: var(--text-muted);"></i>
                 </div>
             </div>
-<h5>
-          
-               
+
+            <div class="timeline-body">
+                <div class="track-labels">
+                    <div class="t-label">SCENES</div>
+                    <div class="t-label">TEXT</div>
+                    <div class="t-label">AUDIO</div>
+                </div>
+                
                 <div class="tracks-viewport" id="tracks-viewport">
                     <div class="ruler-container" id="tl-ruler">
                         <div class="playhead" id="playhead"></div>
