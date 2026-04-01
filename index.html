@@ -66,174 +66,303 @@
                     <p>Professional HD Video Editor</p>
                 </header>
                 
-                <div class="controls-wrapper" id="properties-panel">
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" data-tab="editor"><i class="fa-solid fa-clapperboard"></i> STUDIO</button>
+                    <button class="tab-btn" data-tab="designer"><i class="fa-solid fa-palette"></i> DESIGNER</button>
+                </div>
+
+                <div id="tab-editor" class="tab-content active">
+                    <div class="controls-wrapper" id="properties-panel">
+                        
+                        <!-- Empty State -->
+                        <div id="prop-empty" class="prop-section active">
+                            <div style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
+                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                                    <i class="fa-solid fa-mouse-pointer" style="font-size: 1.5rem; opacity: 0.5;"></i>
+                                </div>
+                                <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">No Selection</h4>
+                                <p style="font-size: 0.75rem; line-height: 1.5;">Select a clip on the timeline to reveal its properties and start editing.</p>
+                            </div>
+                        </div>
                     
-                    <!-- Empty State -->
-                    <div id="prop-empty" class="prop-section active">
-                        <div style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
-                            <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                                <i class="fa-solid fa-mouse-pointer" style="font-size: 1.5rem; opacity: 0.5;"></i>
+                        <!-- MEDIA / BACKGROUND SECION (Pages) -->
+                        <div id="prop-media" class="prop-section">
+                            <div class="prop-header">
+                                <h3><i class="fa-solid fa-image"></i> Scene Background</h3>
+                                <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                            <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">No Selection</h4>
-                            <p style="font-size: 0.75rem; line-height: 1.5;">Select a clip on the timeline to reveal its properties and start editing.</p>
-                        </div>
-                    </div>
-                
-                    <!-- MEDIA / BACKGROUND SECION (Pages) -->
-                    <div id="prop-media" class="prop-section">
-                        <div class="prop-header">
-                            <h3><i class="fa-solid fa-image"></i> Scene Background</h3>
-                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label>Background Type</label>
-                            <select id="bg-type" class="input-field styled-select">
-                                <option value="color">Solid Color</option>
-                                <option value="gradient">Gradient</option>
-                                <option value="image">Image Upload</option>
-                                <option value="video">Video Upload</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group" id="bg-color-group">
-                            <label>Background Color</label>
-                            <div class="flex-row">
-                                <input type="color" id="bg-color-val" value="#1a1a2e">
-                                <input type="text" id="bg-color-hex" class="input-field" value="#1a1a2e" style="font-family: monospace; font-size: 0.75rem;">
-                            </div>
-                        </div>
-
-                        <div class="control-group" id="bg-grad-group" style="display:none;">
-                            <label>Gradient Palette</label>
-                            <div class="flex-row">
-                                <input type="color" id="bg-grad-1" value="#10b981">
-                                <input type="color" id="bg-grad-2" value="#3b82f6">
-                            </div>
-                            <div class="flex-spaced" style="margin-top: 0.5rem;">
-                                <label>Angle: <span id="grad-angle-val">135</span>&deg;</label>
-                                <input type="range" id="bg-grad-angle" min="0" max="360" value="135" style="width: 60%;">
-                            </div>
-                        </div>
-
-                        <div class="control-group" id="bg-upload-group" style="display:none;">
-                            <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
-                                <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
-                            </label>
-                            <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
-                        </div>
-                    </div>
-
-                    <!-- TEXT SECTION -->
-                    <div id="prop-text" class="prop-section">
-                        <div class="prop-header">
-                            <h3><i class="fa-solid fa-font"></i> Text Content</h3>
-                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        
-                        <div class="text-editor-container">
-                             <textarea id="text-content" placeholder="Type your text here..."></textarea>
-                             
-                             <div class="icon-picker" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
-                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-star"><i class="fa-solid fa-star"></i></button>
-                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></button>
-                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-fire"><i class="fa-solid fa-fire"></i></button>
-                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></button>
-                                 <button class="btn btn-secondary icon-insert-btn" data-icon="fa-check"><i class="fa-solid fa-check"></i></button>
-                             </div>
-                        </div>
-
-                        <div class="text-settings-scroll" style="margin-top: 1rem; flex-shrink: 0;">
+                            
                             <div class="control-group">
-                                <label>Typography</label>
-                                <select id="text-font" class="input-field styled-select" style="margin-bottom: 0.5rem;">
-                                    <option value="'Outfit', sans-serif">Outfit (Modern)</option>
-                                    <option value="'Inter', sans-serif">Inter (Clean)</option>
-                                    <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+                                <label>Background Type</label>
+                                <select id="bg-type" class="input-field styled-select">
+                                    <option value="color">Solid Color</option>
+                                    <option value="gradient">Gradient</option>
+                                    <option value="image">Image Upload</option>
+                                    <option value="video">Video Upload</option>
                                 </select>
-                                
-                                <div class="flex-spaced">
-                                    <div class="flex-row">
-                                        <input type="color" id="text-color" value="#ffffff" title="Text Color">
-                                        <input type="color" id="text-bg-color" value="#000000" title="Background Color">
+                            </div>
+
+                            <div class="control-group" id="bg-color-group">
+                                <label>Background Color</label>
+                                <div class="flex-row">
+                                    <input type="color" id="bg-color-val" value="#1a1a2e">
+                                    <input type="text" id="bg-color-hex" class="input-field" value="#1a1a2e" style="font-family: monospace; font-size: 0.75rem;">
+                                </div>
+                            </div>
+
+                            <div class="control-group" id="bg-grad-group" style="display:none;">
+                                <label>Gradient Palette</label>
+                                <div class="flex-row">
+                                    <input type="color" id="bg-grad-1" value="#10b981">
+                                    <input type="color" id="bg-grad-2" value="#3b82f6">
+                                </div>
+                                <div class="flex-spaced" style="margin-top: 0.5rem;">
+                                    <label>Angle: <span id="grad-angle-val">135</span>&deg;</label>
+                                    <input type="range" id="bg-grad-angle" min="0" max="360" value="135" style="width: 60%;">
+                                </div>
+                            </div>
+
+                            <div class="control-group" id="bg-upload-group" style="display:none;">
+                                <label class="btn btn-secondary file-upload-btn w-100">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
+                                    <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
+                                </label>
+                                <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
+                            </div>
+                        </div>
+
+                        <!-- TEXT SECTION -->
+                        <div id="prop-text" class="prop-section">
+                            <div class="prop-header">
+                                <h3><i class="fa-solid fa-font"></i> Text Content</h3>
+                                <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            
+                            <div class="text-editor-container">
+                                 <textarea id="text-content" placeholder="Type your text here..."></textarea>
+                                 
+                                 <div class="icon-picker" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
+                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-star"><i class="fa-solid fa-star"></i></button>
+                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></button>
+                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-fire"><i class="fa-solid fa-fire"></i></button>
+                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></button>
+                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-check"><i class="fa-solid fa-check"></i></button>
+                                 </div>
+                            </div>
+
+                            <div class="text-settings-scroll" style="margin-top: 1rem; flex-shrink: 0;">
+                                <div class="control-group">
+                                    <label>Typography</label>
+                                    <select id="text-font" class="input-field styled-select" style="margin-bottom: 0.5rem;">
+                                        <option value="'Outfit', sans-serif">Outfit (Modern)</option>
+                                        <option value="'Inter', sans-serif">Inter (Clean)</option>
+                                        <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+                                    </select>
+                                    
+                                    <div class="flex-spaced">
+                                        <div class="flex-row">
+                                            <input type="color" id="text-color" value="#ffffff" title="Text Color">
+                                            <input type="color" id="text-bg-color" value="#000000" title="Background Color">
+                                        </div>
+                                        <div class="toggle-group" style="flex: 1; margin-left: 0.75rem;">
+                                            <button class="style-btn" id="btn-bold"><i class="fa-solid fa-bold"></i></button>
+                                            <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
+                                        </div>
                                     </div>
-                                    <div class="toggle-group" style="flex: 1; margin-left: 0.75rem;">
-                                        <button class="style-btn" id="btn-bold"><i class="fa-solid fa-bold"></i></button>
-                                        <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
+                                    <div class="flex-row" style="margin-top: 0.5rem;">
+                                        <input type="checkbox" id="text-bg-transparent">
+                                        <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent Background</label>
                                     </div>
                                 </div>
-                                <div class="flex-row" style="margin-top: 0.5rem;">
-                                    <input type="checkbox" id="text-bg-transparent">
-                                    <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent Background</label>
+
+                                <div class="control-group">
+                                    <div class="flex-spaced">
+                                        <label>Font Size</label>
+                                        <span id="text-size-val" style="font-size: 0.75rem; color: var(--accent);">36px</span>
+                                    </div>
+                                    <input type="range" id="text-size" min="10" max="200" value="36">
+                                </div>
+
+                                <div class="control-group">
+                                    <label>Visual Effects</label>
+                                    <select id="text-effect" class="input-field styled-select">
+                                        <option value="none">Standard Style</option>
+                                        <option value="glow">Neon Glow</option>
+                                        <option value="shadow">Drop Shadow</option>
+                                        <option value="outline">Text Outline</option>
+                                        <option value="fade-scale">Fade + Scale</option>
+                                        <option value="staggered-slide">Staggered Slide</option>
+                                    </select>
+                                </div>
+
+                                <div class="control-group">
+                                    <label>Text Animation</label>
+                                    <select id="text-animation" class="input-field styled-select">
+                                        <option value="none">No Animation</option>
+                                        <option value="scroll-left">Scroll Left</option>
+                                        <option value="scroll-right">Scroll Right</option>
+                                        <option value="scroll-up">Scroll Up</option>
+                                        <option value="scroll-down">Scroll Down</option>
+                                        <option value="marquee-left">Marquee (Loop) L</option>
+                                        <option value="marquee-right">Marquee (Loop) R</option>
+                                    </select>
+                                </div>
+
+                                <div id="effect-settings" class="control-group" style="display: none;">
+                                    <div class="flex-spaced">
+                                        <label>Effect Speed</label>
+                                        <span id="effect-speed-val" style="font-size: 0.75rem; color: var(--accent);">5</span>
+                                    </div>
+                                    <input type="range" id="effect-speed" min="1" max="20" value="5">
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- AUDIO SECTION -->
+                        <div id="prop-audio" class="prop-section">
+                            <div class="prop-header">
+                                <h3><i class="fa-solid fa-music"></i> Audio Track</h3>
+                                <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div class="control-group">
+                                <label class="btn btn-secondary file-upload-btn w-100">
+                                    <i class="fa-solid fa-file-audio"></i> Choose Audio File
+                                    <input type="file" id="audio-file-upload" accept="audio/*" hidden>
+                                </label>
+                                <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
+                            </div>
                             <div class="control-group">
                                 <div class="flex-spaced">
-                                    <label>Font Size</label>
-                                    <span id="text-size-val" style="font-size: 0.75rem; color: var(--accent);">36px</span>
+                                    <label>Master Volume</label>
+                                    <span id="audio-vol-val" style="font-size: 0.75rem; color: var(--accent);">100%</span>
                                 </div>
-                                <input type="range" id="text-size" min="10" max="200" value="36">
-                            </div>
-
-                            <div class="control-group">
-                                <label>Visual Effects</label>
-                                <select id="text-effect" class="input-field styled-select">
-                                    <option value="none">Standard Style</option>
-                                    <option value="glow">Neon Glow</option>
-                                    <option value="shadow">Drop Shadow</option>
-                                    <option value="outline">Text Outline</option>
-                                    <option value="fade-scale">Fade + Scale</option>
-                                    <option value="staggered-slide">Staggered Slide</option>
-                                </select>
-                            </div>
-
-                            <div class="control-group">
-                                <label>Text Animation</label>
-                                <select id="text-animation" class="input-field styled-select">
-                                    <option value="none">No Animation</option>
-                                    <option value="scroll-left">Scroll Left</option>
-                                    <option value="scroll-right">Scroll Right</option>
-                                    <option value="scroll-up">Scroll Up</option>
-                                    <option value="scroll-down">Scroll Down</option>
-                                    <option value="marquee-left">Marquee (Loop) L</option>
-                                    <option value="marquee-right">Marquee (Loop) R</option>
-                                </select>
-                            </div>
-
-                            <div id="effect-settings" class="control-group" style="display: none;">
-                                <div class="flex-spaced">
-                                    <label>Effect Speed</label>
-                                    <span id="effect-speed-val" style="font-size: 0.75rem; color: var(--accent);">5</span>
-                                </div>
-                                <input type="range" id="effect-speed" min="1" max="20" value="5">
+                                <input type="range" id="audio-vol" min="0" max="100" value="100">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- AUDIO SECTION -->
-                    <div id="prop-audio" class="prop-section">
-                        <div class="prop-header">
-                            <h3><i class="fa-solid fa-music"></i> Audio Track</h3>
-                            <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+                <!-- DESIGNER TAB -->
+                <div id="tab-designer" class="tab-content">
+                    <div class="designer-panel">
+                        <header class="sidebar-header" style="padding: 0 0 1rem 0;">
+                            <h2><i class="fa-solid fa-palette" style="color: var(--accent);"></i> Creative Designer</h2>
+                        </header>
+
+                        <!-- BG OPTIONS -->
+                        <div class="fx-card">
+                            <div class="fx-title">Canvas Background</div>
+                            <div class="control-group">
+                                <select id="ds-bg-type" class="input-field styled-select">
+                                    <option value="solid">Solid Color</option>
+                                    <option value="gradient">Linear Gradient</option>
+                                </select>
+                            </div>
+                            <div class="flex-row" id="ds-bg-solid-ctrl">
+                                <input type="color" id="ds-bg-color" value="#6366f1">
+                                <span style="font-size: 0.7rem; color: var(--text-muted);">Solid Base</span>
+                            </div>
+                            <div class="flex-row" id="ds-bg-grad-ctrl" style="display:none; gap: 0.5rem;">
+                                <input type="color" id="ds-bg-grad1" value="#6366f1">
+                                <input type="color" id="ds-bg-grad2" value="#a855f7">
+                                <input type="range" id="ds-bg-angle" min="0" max="360" value="135" title="Angle">
+                            </div>
                         </div>
-                        <div class="control-group">
-                            <label class="btn btn-secondary file-upload-btn w-100">
-                                <i class="fa-solid fa-file-audio"></i> Choose Audio File
-                                <input type="file" id="audio-file-upload" accept="audio/*" hidden>
+
+                        <!-- TEXT OPTIONS -->
+                        <div class="fx-card">
+                            <div class="fx-title">Text Engine</div>
+                            <textarea id="ds-text-content" class="input-field" placeholder="Graphic Text..." style="height: 60px; margin-bottom: 0.5rem;"></textarea>
+                            
+                            <div class="control-group">
+                                <select id="ds-font" class="input-field styled-select">
+                                    <option value="'Outfit'">Outfit (Modern)</option>
+                                    <option value="'Playfair Display'">Playfair (Elegant)</option>
+                                    <option value="'Inter'">Inter (Global)</option>
+                                    <option value="'Dancing Script', cursive">Dancing Script (Playful)</option>
+                                    <option value="'Bebas Neue', sans-serif">Bebas Neue (Bold)</option>
+                                    <option value="'Lobster', cursive">Lobster (Retro)</option>
+                                    <option value="monospace">Monospace (Code)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex-spaced" style="margin-bottom: 0.5rem;">
+                                <div class="toggle-group" style="flex: 1;">
+                                    <button class="style-btn" id="ds-btn-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
+                                    <button class="style-btn" id="ds-btn-italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
+                                    <button class="style-btn" id="ds-btn-underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="flex-row">
+                                <div class="control-group" style="flex: 1;">
+                                    <label>Text Color</label>
+                                    <input type="color" id="ds-text-color" value="#ffffff" style="width: 100%;">
+                                </div>
+                                <div class="control-group" style="flex: 1;">
+                                    <label>Text BG</label>
+                                    <input type="color" id="ds-text-bg" value="#000000" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FONT EFFECTS -->
+                        <div class="fx-card">
+                            <div class="fx-title">Advanced FX</div>
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Shadow</label><input type="range" id="ds-fx-shadow" min="0" max="50" value="0"></div>
+                                <div class="flex-spaced"><label>Blur</label><input type="range" id="ds-fx-blur" min="0" max="20" value="0"></div>
+                                <div class="flex-spaced"><label>Neon Glow</label><input type="range" id="ds-fx-glow" min="0" max="40" value="0"></div>
+                            </div>
+                        </div>
+
+                        <!-- IMAGE IMPORT & ADJUSTMENTS -->
+                        <div class="fx-card">
+                            <div class="fx-title">Image Assets</div>
+                            <label class="btn btn-primary w-100" style="margin-bottom: 1.5rem;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> IMPORT IMAGE
+                                <input type="file" id="ds-image-upload" accept="image/*" hidden>
                             </label>
-                            <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
-                        </div>
-                        <div class="control-group">
-                            <div class="flex-spaced">
-                                <label>Master Volume</label>
-                                <span id="audio-vol-val" style="font-size: 0.75rem; color: var(--accent);">100%</span>
-                            </div>
-                            <input type="range" id="audio-vol" min="0" max="100" value="100">
-                        </div>
-                    </div>
 
+                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6;">Quick Adjustments</div>
+                            
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Brightness</label><span id="ds-brightness-val">100%</span></div>
+                                <input type="range" id="ds-brightness" min="0" max="200" value="100">
+                            </div>
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Contrast</label><span id="ds-contrast-val">100%</span></div>
+                                <input type="range" id="ds-contrast" min="0" max="200" value="100">
+                            </div>
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Sharpness</label><span id="ds-sharpness-val">0</span></div>
+                                <input type="range" id="ds-sharpness" min="0" max="100" value="0">
+                            </div>
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Hue Color</label><span id="ds-hue-val">0deg</span></div>
+                                <input type="range" id="ds-hue" min="0" max="360" value="0">
+                            </div>
+                            <div class="control-group">
+                                <div class="flex-spaced"><label>Sketch Intensity</label><span id="ds-sketch-val">0%</span></div>
+                                <input type="range" id="ds-sketch" min="0" max="100" value="0">
+                            </div>
+                        </div>
+
+                        <!-- POPULAR RATIOS -->
+                        <div class="fx-card">
+                            <div class="fx-title">Canvas Ratio</div>
+                            <div class="ratio-selector">
+                                <button class="ratio-btn active" data-ratio="9:16">9:16</button>
+                                <button class="ratio-btn" data-ratio="16:9">16:9</button>
+                                <button class="ratio-btn" data-ratio="1:1">1:1</button>
+                                <button class="ratio-btn" data-ratio="4:5">4:5</button>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-accent" id="ds-download-btn" style="margin-top: 1rem;">
+                            <i class="fa-solid fa-download"></i> DOWNLOAD DESIGN
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Sidebar Footer Actions Removed based on request -->
