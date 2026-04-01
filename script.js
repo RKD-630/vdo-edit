@@ -168,9 +168,15 @@ document.addEventListener('DOMContentLoaded', () => {
         tracksViewport.addEventListener('mousedown', (e) => { if (e.target.id === 'tl-ruler' || e.target.parentElement.id === 'tl-ruler') { const rect = tracksViewport.getBoundingClientRect(); const x = e.clientX - rect.left + tracksViewport.scrollLeft; seekTo(Math.max(0, Math.min(APP.duration, x / APP.zoom))); } });
 
         if (tlPlayBtn) tlPlayBtn.addEventListener('click', togglePlayback);
-        document.getElementById('add-media-clip-btn').addEventListener('click', () => addClip('media', APP.time, 5, { bgType: 'color', color: '#1a1a2e', objectFit: 'cover' }));
-        document.getElementById('add-text-clip-btn').addEventListener('click', () => addClip('text', APP.time, 4, { text: "New Text", font: "'Outfit', sans-serif", size: 36, color: '#ffffff', bgColor: 'transparent', effect: 'none', animation: 'none', speed: 5, x: 50, y: 50 }));
-        document.getElementById('add-audio-clip-btn').addEventListener('click', () => addClip('audio', 0, APP.duration, { src: null, volume: 100 }));
+        
+        const safeAddEvent = (id, event, handler) => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener(event, handler);
+        };
+
+        safeAddEvent('add-media-clip-btn', 'click', () => addClip('media', APP.time, 5, { bgType: 'color', color: '#1a1a2e', objectFit: 'cover' }));
+        safeAddEvent('add-text-clip-btn', 'click', () => addClip('text', APP.time, 4, { text: "New Text", font: "'Outfit', sans-serif", size: 36, color: '#ffffff', bgColor: 'transparent', effect: 'none', animation: 'none', speed: 5, x: 50, y: 50 }));
+        safeAddEvent('add-audio-clip-btn', 'click', () => addClip('audio', 0, APP.duration, { src: null, volume: 100 }));
 
         if (tlDeleteBtn) tlDeleteBtn.addEventListener('click', deleteSelectedClip);
 
@@ -216,13 +222,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sidebar Toggle & Close logic
         const toggleSidebar = () => sidebar.classList.toggle('open');
-        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarToggle.addEventListener('touchstart', (e) => { e.preventDefault(); toggleSidebar(); }, { passive: false });
+        }
         const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+        if (closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+            closeSidebarBtn.addEventListener('touchstart', (e) => { e.preventDefault(); sidebar.classList.remove('open'); }, { passive: false });
+        }
 
         // --- Sidebar Tab Switching ---
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            const handleTabClick = () => {
                 const tab = btn.getAttribute('data-tab');
                 const appContainer = document.querySelector('.app-container');
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
@@ -235,7 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     appContainer.classList.remove('designer-mode');
                     renderVideoFrame();
                 }
-            });
+            };
+            btn.addEventListener('click', handleTabClick);
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleTabClick(); }, { passive: false });
         });
 
         // --- Designer Event Listeners ---
@@ -583,7 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateEffectSettingsVisibility() { 
         const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right'];
         const hasMotion = motionList.includes(textAnimation.value) || ['fade-scale', 'staggered-slide'].includes(textEffect.value); 
-        document.getElementById('effect-settings').style.display = hasMotion ? 'block' : 'none'; 
+        const effectSettings = document.getElementById('effect-settings');
+        if (effectSettings) effectSettings.style.display = hasMotion ? 'block' : 'none'; 
     }
     function handleMediaUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(bgFileName) bgFileName.innerText = file.name; const url = URL.createObjectURL(file); c.srcUrl = url; if (file.type.startsWith('video/')) { c.bgType = 'video'; c.videoObj = document.createElement('video'); c.videoObj.src = url; c.videoObj.muted = true; c.videoObj.loop = true; c.videoObj.playsInline = true; } else { c.bgType = 'image'; c.imgObj = new Image(); c.imgObj.src = url; } updateMediaInspectorVisibility(); renderTimelineClips(); renderVideoFrame(); } }
     function handleAudioUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(audioFileName) audioFileName.innerText = file.name; c.audioObj = new Audio(URL.createObjectURL(file)); c.audioObj.volume = (c.volume || 100) / 100; } }
