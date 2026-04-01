@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 sharpness: 0,
                 hue: 0,
                 sketch: 0
-            }
+            },
+            currentFilter: 'brightness'
         }
     };
 
@@ -213,6 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('keydown', (e) => { if ((e.key === 'Delete' || e.key === 'Backspace') && document.activeElement.tagName === 'BODY' && APP.selectedClipId) { deleteSelectedClip(); } });
 
+        // Sidebar Toggle & Close logic
+        const toggleSidebar = () => sidebar.classList.toggle('open');
+        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+
         // --- Sidebar Tab Switching ---
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -222,10 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tab}`));
                 
                 if (tab === 'designer') {
-                    appContainer.classList.add('hide-timeline');
+                    appContainer.classList.add('designer-mode');
                     renderDesignerPreview();
                 } else {
-                    appContainer.classList.remove('hide-timeline');
+                    appContainer.classList.remove('designer-mode');
                     renderVideoFrame();
                 }
             });
@@ -266,23 +273,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // NEW Range-based Adjustments
-        const dsFilters = ['brightness', 'contrast', 'sharpness', 'hue', 'sketch'];
-        dsFilters.forEach(f => {
-            const el = document.getElementById(`ds-${f}`);
-            const valSpan = document.getElementById(`ds-${f}-val`);
-            if (el) {
-                el.addEventListener('input', (e) => {
-                    const val = parseInt(e.target.value);
-                    APP.designer.filters[f] = val;
-                    if (valSpan) {
-                        const unit = f === 'hue' ? 'deg' : (f === 'sharpness' ? '' : '%');
-                        valSpan.innerText = val + unit;
-                    }
-                    renderDesignerPreview();
-                });
-            }
+        // --- Master Adjustment Slider Logic ---
+        const masterSlider = document.getElementById('ds-master-slider');
+        const masterLabel = document.getElementById('ds-master-label');
+        const masterVal = document.getElementById('ds-master-val');
+
+        document.querySelectorAll('.filter-sel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+                APP.designer.currentFilter = filter;
+                
+                // Update UI active state
+                document.querySelectorAll('.filter-sel-btn').forEach(b => b.classList.toggle('active', b === btn));
+                
+                // Update Slider based on filter range
+                masterLabel.innerText = filter.toUpperCase();
+                let min = 0, max = 100, val = APP.designer.filters[filter];
+                if (filter === 'brightness' || filter === 'contrast') max = 200;
+                else if (filter === 'hue') max = 360;
+                
+                masterSlider.min = min;
+                masterSlider.max = max;
+                masterSlider.value = val;
+                
+                const unit = filter === 'hue' ? 'deg' : (filter === 'sharpness' ? '' : '%');
+                masterVal.innerText = val + unit;
+            });
         });
+
+        if (masterSlider) {
+            masterSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                const filter = APP.designer.currentFilter;
+                APP.designer.filters[filter] = val;
+                
+                const unit = filter === 'hue' ? 'deg' : (filter === 'sharpness' ? '' : '%');
+                masterVal.innerText = val + unit;
+                
+                renderDesignerPreview();
+            });
+        }
 
         document.querySelectorAll('.ratio-btn').forEach(btn => {
             btn.addEventListener('click', () => {

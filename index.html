@@ -67,9 +67,14 @@
                 </header>
                 
                 <div class="sidebar-tabs">
+                <div class="tabs-group">
                     <button class="tab-btn active" data-tab="editor"><i class="fa-solid fa-clapperboard"></i> STUDIO</button>
                     <button class="tab-btn" data-tab="designer"><i class="fa-solid fa-palette"></i> DESIGNER</button>
                 </div>
+                <button id="close-sidebar-btn" class="close-sidebar-btn" title="Hide Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
                 <div id="tab-editor" class="tab-content active">
                     <div class="controls-wrapper" id="properties-panel">
@@ -324,27 +329,25 @@
                                 <input type="file" id="ds-image-upload" accept="image/*" hidden>
                             </label>
 
-                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6;">Quick Adjustments</div>
-                            
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Brightness</label><span id="ds-brightness-val">100%</span></div>
-                                <input type="range" id="ds-brightness" min="0" max="200" value="100">
+                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6; margin-top: 1rem;">Filter Selection</div>
+                            <div class="filter-selector-grid">
+                                <button class="filter-sel-btn active" data-filter="brightness"><i class="fa-solid fa-sun"></i> BRIGHT</button>
+                                <button class="filter-sel-btn" data-filter="contrast"><i class="fa-solid fa-circle-half-stroke"></i> CONTRAST</button>
+                                <button class="filter-sel-btn" data-filter="sharpness"><i class="fa-solid fa-wand-magic-sparkles"></i> SHARP</button>
+                                <button class="filter-sel-btn" data-filter="hue"><i class="fa-solid fa-droplet"></i> HUE</button>
+                                <button class="filter-sel-btn" data-filter="sketch"><i class="fa-solid fa-pencil"></i> SKETCH</button>
                             </div>
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Contrast</label><span id="ds-contrast-val">100%</span></div>
-                                <input type="range" id="ds-contrast" min="0" max="200" value="100">
-                            </div>
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Sharpness</label><span id="ds-sharpness-val">0</span></div>
-                                <input type="range" id="ds-sharpness" min="0" max="100" value="0">
-                            </div>
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Hue Color</label><span id="ds-hue-val">0deg</span></div>
-                                <input type="range" id="ds-hue" min="0" max="360" value="0">
-                            </div>
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Sketch Intensity</label><span id="ds-sketch-val">0%</span></div>
-                                <input type="range" id="ds-sketch" min="0" max="100" value="0">
+
+                            <div class="master-control-box">
+                                <div class="flex-spaced">
+                                    <label id="ds-master-label">BRIGHTNESS</label>
+                                    <span id="ds-master-val">100%</span>
+                                </div>
+                                <input type="range" id="ds-master-slider" min="0" max="200" value="100">
+                                <div class="slider-labels">
+                                    <span>MIN</span>
+                                    <span>MAX</span>
+                                </div>
                             </div>
                         </div>
 
