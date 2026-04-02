@@ -358,6 +358,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { passive: false });
         }
 
+        // Individual Tab Close Buttons
+        document.querySelectorAll('.close-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth > 900) {
+                    sidebar.classList.add('closed');
+                } else {
+                    sidebar.classList.remove('open');
+                }
+            });
+        });
+
         // --- Sidebar Tab Switching ---
         document.querySelectorAll('.tab-btn').forEach(btn => {
             const handleTabClick = () => {
@@ -365,6 +376,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const appContainer = document.querySelector('.app-container');
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tab}`));
+
+                // Open sidebar if it was closed
+                if (window.innerWidth > 900) {
+                    sidebar.classList.remove('closed');
+                } else {
+                    sidebar.classList.add('open');
+                }
                 
                 if (tab === 'designer') {
                     appContainer.classList.add('designer-mode');
