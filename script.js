@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 hue: 0,
                 sketch: 0
             },
-            currentFilter: 'brightness'
+            currentFilter: 'brightness',
+            frame: 'square'
         }
     };
 
@@ -223,6 +224,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (textWrap) textWrap.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.wrap = e.target.checked; renderVideoFrame(); } });
         if (textEffect) textEffect.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.effect = e.target.value; updateEffectSettingsVisibility(); renderVideoFrame(); } });
         if (textAnimation) textAnimation.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.animation = e.target.value; updateEffectSettingsVisibility(); renderVideoFrame(); } });
+        
+        const vfxIntensity = document.getElementById('vfx-intensity');
+        if (vfxIntensity) vfxIntensity.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) {
+                c.intensity = parseInt(e.target.value);
+                const valEl = document.getElementById('vfx-intensity-val');
+                if (valEl) valEl.innerText = c.intensity;
+                renderVideoFrame();
+            }
+        });
+
         if (effectSpeed) effectSpeed.addEventListener('input', (e) => { if(document.getElementById('effect-speed-val')) document.getElementById('effect-speed-val').innerText = e.target.value; const c = getClip(APP.selectedClipId); if(c) { c.speed = parseInt(e.target.value); renderVideoFrame(); } });
         
         if (btnBold) btnBold.addEventListener('click', () => { const c = getClip(APP.selectedClipId); if(c) { c.bold = !c.bold; btnBold.classList.toggle('active', c.bold); renderVideoFrame(); } });
@@ -346,6 +359,88 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleTabClick(); }, { passive: false });
         });
 
+        // --- Merge Tab Logic ---
+        const mergeVideoUpload = document.getElementById('merge-video-upload');
+        const mergeAudioUpload = document.getElementById('merge-audio-upload');
+        const mergeImageUpload = document.getElementById('merge-image-upload');
+        const mergeExportBtn = document.getElementById('merge-export-btn');
+
+        if (mergeVideoUpload) {
+            mergeVideoUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                const videoObj = document.createElement('video');
+                videoObj.src = url;
+                videoObj.muted = true;
+                videoObj.loop = true;
+                videoObj.playsInline = true;
+                videoObj.onloadedmetadata = () => {
+                    const dur = Math.min(10, videoObj.duration) || 5;
+                    addClip('media', APP.time, dur, { 
+                        bgType: 'video', 
+                        videoObj: videoObj, 
+                        srcUrl: url, 
+                        fileName: file.name,
+                        objectFit: 'cover'
+                    });
+                    // Switch to STUDIO tab to show properties
+                    document.querySelector('.tab-btn[data-tab="editor"]').click();
+                };
+            });
+        }
+
+        if (mergeAudioUpload) {
+            mergeAudioUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                const audioObj = new Audio(url);
+                audioObj.volume = 1;
+                audioObj.onloadedmetadata = () => {
+                    const dur = audioObj.duration || 10;
+                    addClip('audio', APP.time, dur, { 
+                        src: url, 
+                        audioObj: audioObj, 
+                        srcUrl: url,
+                        fileName: file.name, 
+                        volume: 100 
+                    });
+                    document.querySelector('.tab-btn[data-tab="editor"]').click();
+                };
+            });
+        }
+
+        if (mergeImageUpload) {
+            mergeImageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                const imgObj = new Image();
+                imgObj.src = url;
+                imgObj.onload = () => {
+                    addClip('media', APP.time, 5, { 
+                        bgType: 'image', 
+                        imgObj: imgObj, 
+                        srcUrl: url, 
+                        fileName: file.name,
+                        objectFit: 'cover'
+                    });
+                    document.querySelector('.tab-btn[data-tab="editor"]').click();
+                };
+            });
+        }
+
+        if (mergeExportBtn) {
+            mergeExportBtn.addEventListener('click', () => {
+                const formatSelect = document.getElementById('export-format');
+                if (formatSelect) {
+                    formatSelect.value = 'mp4';
+                }
+                finishAndSaveHandler();
+            });
+        }
+
         // --- Designer Event Listeners ---
         const dsInputs = {
             'ds-bg-type': 'bgType', 'ds-bg-color': 'bgColor', 'ds-bg-grad1': 'grad1', 
@@ -378,6 +473,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (id === 'ds-font-size') {
                     if (dsFontSizeVal) dsFontSizeVal.innerText = `${e.target.value}px`;
                 }
+                renderDesignerPreview();
+            });
+        });
+
+        document.querySelectorAll('.frame-sel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.frame-sel-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                APP.designer.frame = btn.getAttribute('data-frame');
                 renderDesignerPreview();
             });
         });
@@ -490,6 +594,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.style.backgroundSize = 'cover';
                 img.style.backgroundPosition = 'center';
                 
+                // Apply frame
+                img.className = `frame-layer frame-${ds.frame}`;
+                if (ds.frame === 'heart') {
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.top = '50%'; img.style.left = '50%';
+                    img.style.transform = 'translate(-50%, -50%) scale(2)';
+                }
+                
                 // Apply filters
                 let filterStr = `brightness(${ds.filters.brightness}%) contrast(${ds.filters.contrast}%) hue-rotate(${ds.filters.hue}deg)`;
                 if (ds.filters.sketch > 0) filterStr += ` grayscale(${ds.filters.sketch}%) contrast(${100 + ds.filters.sketch}%)`;
@@ -553,6 +666,31 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = (rw >= rh) ? base * (rh / rw) : base;
 
         const ctx = canvas.getContext('2d');
+        const [w, h] = [canvas.width, canvas.height];
+
+        // Frame Clipping Logic for Download
+        if (ds.frame && ds.frame !== 'square') {
+            ctx.beginPath();
+            if (ds.frame === 'circle') {
+                ctx.arc(w/2, h/2, Math.min(w, h)/2, 0, Math.PI * 2);
+            } else if (ds.frame === 'rounded') {
+                const r = Math.min(w, h) * 0.15;
+                ctx.roundRect(0, 0, w, h, r);
+            } else if (ds.frame === 'hexagon') {
+                ctx.moveTo(w * 0.25, 0); ctx.lineTo(w * 0.75, 0); ctx.lineTo(w, h * 0.5); 
+                ctx.lineTo(w * 0.75, h); ctx.lineTo(w * 0.25, h); ctx.lineTo(0, h * 0.5); 
+                ctx.closePath();
+            } else if (ds.frame === 'heart') {
+                // Approximate heart shape for canvas
+                const top = h * 0.2;
+                ctx.moveTo(w * 0.5, h * 0.9);
+                ctx.bezierCurveTo(w * 0.2, h * 0.7, 0, h * 0.5, 0, h * 0.3);
+                ctx.bezierCurveTo(0, h * 0.1, w * 0.2, 0, w * 0.5, h * 0.2);
+                ctx.bezierCurveTo(w * 0.8, 0, w, h * 0.1, w, h * 0.3);
+                ctx.bezierCurveTo(w, h * 0.5, w * 0.8, h * 0.7, w * 0.5, h * 0.9);
+            }
+            ctx.clip();
+        }
 
         // 1. Draw Background
         if (ds.bgType === 'solid') {
@@ -764,10 +902,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMediaInspectorVisibility() { if(bgColorGroup) bgColorGroup.style.display = bgType.value === 'color' ? 'flex' : 'none'; if(bgGradGroup) bgGradGroup.style.display = bgType.value === 'gradient' ? 'flex' : 'none'; if(bgUploadGroup) bgUploadGroup.style.display = ['image', 'video'].includes(bgType.value) ? 'flex' : 'none'; }
     function updateEffectSettingsVisibility() { 
-        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out'];
+        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out', 'unfold-reveal'];
         const hasMotion = motionList.includes(textAnimation.value) || ['fade-scale', 'staggered-slide'].includes(textEffect.value); 
         const effectSettings = document.getElementById('effect-settings');
         if (effectSettings) effectSettings.style.display = hasMotion ? 'block' : 'none'; 
+
+        const intensityGroup = document.getElementById('vfx-intensity-group');
+        const c = getClip(APP.selectedClipId);
+        if (intensityGroup && c) {
+            const hasIntensity = ['glow', 'shadow', 'outline'].includes(c.effect);
+            intensityGroup.style.display = hasIntensity ? 'block' : 'none';
+            if (hasIntensity) {
+                const label = document.getElementById('vfx-intensity-label');
+                const slider = document.getElementById('vfx-intensity');
+                const valE = document.getElementById('vfx-intensity-val');
+                
+                if (c.effect === 'glow') { label.innerText = 'Glow Spread'; slider.max = 50; }
+                else if (c.effect === 'shadow') { label.innerText = 'Shadow Distance'; slider.max = 30; }
+                else if (c.effect === 'outline') { label.innerText = 'Outline Width'; slider.max = 10; }
+                
+                slider.value = c.intensity || 10;
+                valE.innerText = slider.value;
+            }
+        }
     }
     function handleMediaUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(bgFileName) bgFileName.innerText = file.name; const url = URL.createObjectURL(file); c.srcUrl = url; if (file.type.startsWith('video/')) { c.bgType = 'video'; c.videoObj = document.createElement('video'); c.videoObj.src = url; c.videoObj.muted = true; c.videoObj.loop = true; c.videoObj.playsInline = true; } else { c.bgType = 'image'; c.imgObj = new Image(); c.imgObj.src = url; } updateMediaInspectorVisibility(); renderTimelineClips(); renderVideoFrame(); } }
     function handleAudioUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(audioFileName) audioFileName.innerText = file.name; c.audioObj = new Audio(URL.createObjectURL(file)); c.audioObj.volume = (c.volume || 100) / 100; } }
@@ -786,7 +943,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const dt = time - t.start; const spd = t.speed || 5;
             let tx = t.x, ty = t.y; 
             const anim = t.animation || t.effect; // Support legacy clips that used t.effect for motion
-            if (anim === 'scroll-left') tx -= dt * spd * 10; else if (anim === 'scroll-right') tx += dt * spd * 10; else if (anim === 'scroll-up') ty -= dt * spd * 10; else if (anim === 'scroll-down') ty += dt * spd * 10; else if (anim === 'marquee-left') tx = 110 - ((dt * spd * 20) % 120); else if (anim === 'marquee-right') tx = -10 + ((dt * spd * 20) % 120);
+            if (anim === 'scroll-left') tx -= dt * spd * 10; 
+            else if (anim === 'scroll-right') tx += dt * spd * 10; 
+            else if (anim === 'scroll-up') ty -= dt * spd * 10; 
+            else if (anim === 'scroll-down') ty += dt * spd * 10; 
+            else if (anim === 'marquee-left') tx = 110 - (dt * spd * 20); 
+            else if (anim === 'marquee-right') tx = -10 + (dt * spd * 20);
 
             // Apply Visual Style Effects
             let styleCss = `left: ${tx}%; top: ${ty}%; font-family: ${t.font}; font-size: ${t.size}px; color: ${t.color}; background-color: ${t.bgColor}; font-weight: ${t.bold ? 'bold' : 'normal'}; font-style: ${t.italic ? 'italic' : 'normal'}; transform: translate(-50%, -50%); white-space: ${t.wrap !== false ? 'pre-wrap' : 'nowrap'}; width: ${t.wrap !== false ? '80%' : 'auto'};`;
@@ -798,15 +960,20 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (anim === 'zoom-out') {
                 const scale = Math.max(0.1, 2.0 - (dt * spd * 0.2)); // Start large, shrink
                 transform += ` scale(${scale})`;
+            } else if (anim === 'unfold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                styleCss += `clip-path: inset(0% 0% ${100 - (reveal * 100)}% 0%); opacity: ${Math.min(1, reveal * 2)};`;
             }
+
             styleCss += `transform: ${transform};`;
 
+            const intens = t.intensity || 10;
             if (t.effect === 'glow') {
-                styleCss += `text-shadow: 0 0 10px ${t.color}, 0 0 20px ${t.color}, 0 0 30px ${t.color};`;
+                styleCss += `text-shadow: 0 0 ${intens/2}px ${t.color}, 0 0 ${intens}px ${t.color}, 0 0 ${intens * 1.5}px ${t.color};`;
             } else if (t.effect === 'shadow') {
-                styleCss += `text-shadow: 4px 4px 10px rgba(0,0,0,0.8);`;
+                styleCss += `text-shadow: ${intens/2}px ${intens/2}px ${intens}px rgba(0,0,0,0.8);`;
             } else if (t.effect === 'outline') {
-                styleCss += `-webkit-text-stroke: 1.5px #000; text-stroke: 1.5px #000;`;
+                styleCss += `-webkit-text-stroke: ${intens/5}px #000; text-stroke: ${intens/5}px #000;`;
             } else if (t.effect === 'fade-scale') {
                 const prog = Math.min(1, dt / 0.5); // 0.5s entrance
                 styleCss += `opacity: ${prog}; transform: translate(-50%, -50%) scale(${0.5 + 0.5 * prog});`;
@@ -830,7 +997,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function processFrames(canvas, ctx, fps, onProgress, onFrame) { const total = APP.duration * fps; for(let f = 0; f <= total; f++) { const time = f / fps; ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height); APP.tracks.media.filter(c => time >= c.start && time <= c.end).forEach(m => { ctx.save(); if(m.bgType === 'color') { ctx.fillStyle = m.color; ctx.fillRect(0, 0, canvas.width, canvas.height); } else if(m.bgType === 'gradient') { const grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height); grd.addColorStop(0, m.grad1); grd.addColorStop(1, m.grad2); ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height); } else if(m.bgType === 'image' && m.imgObj) { ctx.drawImage(m.imgObj, 0, 0, canvas.width, canvas.height); } else if(m.bgType === 'video' && m.videoObj) { m.videoObj.currentTime = time - m.start; ctx.drawImage(m.videoObj, 0, 0, canvas.width, canvas.height); } ctx.restore(); }); APP.tracks.text.filter(c => time >= c.start && time <= c.end).forEach(t => { ctx.save(); const dt = time - t.start; const spd = t.speed || 5;
             let txp = t.x, typ = t.y; 
             const anim = t.animation || t.effect;
-            if (anim === 'scroll-left') txp -= dt * spd * 10; else if (anim === 'scroll-right') txp += dt * spd * 10; else if (anim === 'scroll-up') typ -= dt * spd * 10; else if (anim === 'scroll-down') typ += dt * spd * 10; else if (anim === 'marquee-left') txp = 110 - ((dt * spd * 20) % 120); else if (anim === 'marquee-right') txp = -10 + ((dt * spd * 20) % 120);
+            if (anim === 'scroll-left') txp -= dt * spd * 10; 
+            else if (anim === 'scroll-right') txp += dt * spd * 10; 
+            else if (anim === 'scroll-up') typ -= dt * spd * 10; 
+            else if (anim === 'scroll-down') typ += dt * spd * 10; 
+            else if (anim === 'marquee-left') txp = 110 - (dt * spd * 20); 
+            else if (anim === 'marquee-right') txp = -10 + (dt * spd * 20);
             const tx = (txp / 100) * canvas.width, ty = (typ / 100) * canvas.height;
             const fS = (t.size / 480) * canvas.height;
             ctx.font = `${t.bold ? 'bold' : ''} ${t.italic ? 'italic' : ''} ${fS}px ${t.font.split(',')[0].replace(/'/g,'')}`;
@@ -848,23 +1020,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.translate(tx, ty);
                 ctx.scale(scale, scale);
                 ctx.translate(-tx, -ty);
+            } else if (anim === 'unfold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                ctx.beginPath();
+                ctx.rect(0, 0, canvas.width, ty + (reveal * canvas.height * 0.5)); // Simple reveal rect
+                ctx.clip();
+                ctx.globalAlpha = Math.min(1, reveal * 2);
             }
 
+            const intens = t.intensity || 10;
             if (t.effect === 'glow') {
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = intens;
                 ctx.shadowColor = t.color;
             } else if (t.effect === 'shadow') {
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = intens;
                 ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowOffsetX = 4;
-                ctx.shadowOffsetY = 4;
+                ctx.shadowOffsetX = intens/2;
+                ctx.shadowOffsetY = intens/2;
             } else if (t.effect === 'fade-scale') {
                 ctx.globalAlpha = Math.min(1, dt / 0.5);
             }
             // Outline implementation for canvas
             if (t.effect === 'outline') {
                 ctx.strokeStyle = '#000';
-                ctx.lineWidth = fS * 0.05;
+                ctx.lineWidth = (fS * 0.05) * (intens / 10);
             }
 
             ctx.fillStyle = t.color;

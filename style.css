@@ -766,6 +766,87 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
 .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
 .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
 
+/* --- Merge Clip Tab Styles --- */
+.import-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.import-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 0.5rem;
+}
+
+.import-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.import-card i {
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.import-card span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.tool-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tool-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    border-left: 2px solid transparent;
+}
+
+.tool-item i {
+    color: var(--accent);
+    width: 16px;
+}
+
+.tool-item:hover {
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--accent);
+}
+
+#tab-merge .designer-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.glass-morph {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+}
+
 /* Mobile Adaptations */
 @media (max-width: 900px) {
     .top-workspace { flex-direction: column; }
@@ -801,4 +882,37 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     .tl-tools.center { max-width: none; flex: 1; justify-content: center; }
 }
 
+.frame-sel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.frame-sel-btn i { font-size: 1.1rem; }
+
+.frame-sel-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent); }
+
+.frame-sel-btn.active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* Clip Path Utility Classes (mapped in JS) */
+.frame-square { clip-path: inset(0%); }
+.frame-circle { clip-path: circle(50% at 50% 50%); }
+.frame-rounded { clip-path: inset(0% round 15%); }
+.frame-hexagon { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+.frame-heart { clip-path: path('M12 21.6l-1.4-1.3C5.5 15.6 2 12.4 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 3.9-3.5 7.1-8.6 11.8l-1.4 1.3z'); transform: scale(1.5);}
+/* Note: Heart path might need adjustment for container size, better to use svg mask but clip-path is simpler for now */
+
 .sidebar-toggle-btn { color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
+

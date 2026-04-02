@@ -70,12 +70,57 @@
                 <div class="sidebar-tabs">
                 <div class="tabs-group">
                     <button class="tab-btn active" data-tab="editor"><i class="fa-solid fa-clapperboard"></i> STUDIO</button>
+                    <button class="tab-btn" data-tab="merge"><i class="fa-solid fa-film"></i> MERGE CLIP</button>
                     <button class="tab-btn" data-tab="designer"><i class="fa-solid fa-palette"></i> DESIGNER</button>
                 </div>
                 <button id="close-sidebar-btn" class="close-sidebar-btn" title="Hide Sidebar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+
+                <div id="tab-merge" class="tab-content">
+                    <div class="designer-panel">
+                        <header class="sidebar-header" style="padding: 0 0 1rem 0;">
+                            <h2><i class="fa-solid fa-film" style="color: var(--accent);"></i> Clip Merger</h2>
+                            <p>Import and combine multiple assets</p>
+                        </header>
+
+                        <div class="fx-card glass-morph">
+                            <div class="fx-title">Import Assets</div>
+                            <div class="import-grid">
+                                <label class="import-card" title="Import Video Clip">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>VIDEO</span>
+                                    <input type="file" id="merge-video-upload" accept="video/*" hidden>
+                                </label>
+                                <label class="import-card" title="Import Audio Track">
+                                    <i class="fa-solid fa-music"></i>
+                                    <span>AUDIO</span>
+                                    <input type="file" id="merge-audio-upload" accept="audio/*" hidden>
+                                </label>
+                                <label class="import-card" title="Import Image Layer">
+                                    <i class="fa-solid fa-image"></i>
+                                    <span>IMAGE</span>
+                                    <input type="file" id="merge-image-upload" accept="image/*" hidden>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="fx-card">
+                            <div class="fx-title">Project Tools</div>
+                            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 1rem;">Use the timeline to adjust clip timing and position. Select any clip to edit its properties.</p>
+                            <div class="tool-list">
+                                <div class="tool-item"><i class="fa-solid fa-scissors"></i> Split Clips</div>
+                                <div class="tool-item"><i class="fa-solid fa-arrows-left-right"></i> Drag to Reorder</div>
+                                <div class="tool-item"><i class="fa-solid fa-volume-high"></i> Audio Mix</div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-accent" id="merge-export-btn" style="margin-top: 1rem; width: 100%;">
+                            <i class="fa-solid fa-file-video"></i> EXPORT HD MP4
+                        </button>
+                    </div>
+                </div>
 
                 <div id="tab-editor" class="tab-content active">
                     <div class="controls-wrapper" id="properties-panel">
@@ -225,6 +270,14 @@
                                     </select>
                                 </div>
 
+                                <div id="vfx-intensity-group" class="control-group" style="display: none;">
+                                    <div class="flex-spaced">
+                                        <label id="vfx-intensity-label">Intensity</label>
+                                        <span id="vfx-intensity-val" style="font-size: 0.75rem; color: var(--accent);">10</span>
+                                    </div>
+                                    <input type="range" id="vfx-intensity" min="0" max="50" value="10">
+                                </div>
+
                                 <div class="control-group">
                                     <label>Text Animation</label>
                                     <select id="text-animation" class="input-field styled-select">
@@ -235,8 +288,9 @@
                                         <option value="scroll-down">Scroll Down</option>
                                         <option value="zoom-in">Zoom In</option>
                                         <option value="zoom-out">Zoom Out</option>
-                                        <option value="marquee-left">Marquee (Loop) L</option>
-                                        <option value="marquee-right">Marquee (Loop) R</option>
+                                        <option value="unfold-reveal">Unfold Reveal</option>
+                                        <option value="marquee-left">Marquee Left</option>
+                                        <option value="marquee-right">Marquee Right</option>
                                     </select>
                                 </div>
 
@@ -381,6 +435,15 @@
                                 <i class="fa-solid fa-cloud-arrow-up"></i> IMPORT IMAGE
                                 <input type="file" id="ds-image-upload" accept="image/*" hidden>
                             </label>
+
+                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6; margin-top: 1rem;">IMAGE FRAME</div>
+                            <div class="filter-selector-grid" style="grid-template-columns: repeat(5, 1fr);">
+                                <button class="frame-sel-btn active" data-frame="square" title="Square"><i class="fa-solid fa-square"></i></button>
+                                <button class="frame-sel-btn" data-frame="circle" title="Circle"><i class="fa-solid fa-circle"></i></button>
+                                <button class="frame-sel-btn" data-frame="rounded" title="Rounded"><i class="fa-solid fa-square-plus"></i></button>
+                                <button class="frame-sel-btn" data-frame="hexagon" title="Hexagon"><i class="fa-solid fa-shapes"></i></button>
+                                <button class="frame-sel-btn" data-frame="heart" title="Heart"><i class="fa-solid fa-heart"></i></button>
+                            </div>
 
                             <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6; margin-top: 1rem;">Filter Selection</div>
                             <div class="filter-selector-grid">
