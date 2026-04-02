@@ -135,9 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupEventListeners() {
         if (sidebarToggle) sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
+            if (window.innerWidth > 900) {
+                sidebar.classList.toggle('closed');
+            } else {
+                sidebar.classList.toggle('open');
+            }
+            
             // If opening and nothing is selected, show the first text clip by default
-            if(sidebar.classList.contains('open') && !APP.selectedClipId) {
+            if((sidebar.classList.contains('open') || !sidebar.classList.contains('closed')) && !APP.selectedClipId) {
                 const firstText = APP.tracks.text[0];
                 if(firstText) selectClip(firstText.id, 'text');
             }
@@ -328,15 +333,29 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('keydown', (e) => { if ((e.key === 'Delete' || e.key === 'Backspace') && document.activeElement.tagName === 'BODY' && APP.selectedClipId) { deleteSelectedClip(); } });
 
         // Sidebar Toggle & Close logic
-        const toggleSidebar = () => sidebar.classList.toggle('open');
+        const toggleSidebar = () => {
+            if (window.innerWidth > 900) {
+                sidebar.classList.toggle('closed');
+            } else {
+                sidebar.classList.toggle('open');
+            }
+        };
+
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', toggleSidebar);
-            sidebarToggle.addEventListener('touchstart', (e) => { e.preventDefault(); toggleSidebar(); }, { passive: false });
+            // Already handled above, but keeping for consistency if needed elsewhere
         }
+        
         const closeSidebarBtn = document.getElementById('close-sidebar-btn');
         if (closeSidebarBtn) {
-            closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
-            closeSidebarBtn.addEventListener('touchstart', (e) => { e.preventDefault(); sidebar.classList.remove('open'); }, { passive: false });
+            closeSidebarBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('closed');
+            });
+            closeSidebarBtn.addEventListener('touchstart', (e) => { 
+                e.preventDefault(); 
+                sidebar.classList.remove('open'); 
+                sidebar.classList.add('closed');
+            }, { passive: false });
         }
 
         // --- Sidebar Tab Switching ---
