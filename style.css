@@ -647,6 +647,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     position: absolute;
     transform: translate(-50%, -50%); /* Centered anchor */
     white-space: pre-wrap;
+    overflow-wrap: break-word;
     text-align: center;
     pointer-events: auto;
     cursor: move;

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T2V Cinematic Studio Pro</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&family=Poppins:wght@400;600;800&family=Pacifico&family=Bebas+Neue&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Lora:ital,wght@0,400;1,700&family=Great+Vibes&family=Lobster&family=Anton&family=Cinzel:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Stylesheet -->
@@ -162,7 +163,25 @@
                                         <option value="'Outfit', sans-serif">Outfit (Modern)</option>
                                         <option value="'Inter', sans-serif">Inter (Clean)</option>
                                         <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+                                        <option value="'Montserrat', sans-serif">Montserrat (Bold Sans)</option>
+                                        <option value="'Poppins', sans-serif">Poppins (Smooth)</option>
+                                        <option value="'Open Sans', sans-serif">Open Sans (Standard)</option>
+                                        <option value="'Lato', sans-serif">Lato (Friendly)</option>
+                                        <option value="'Cinzel', serif">Cinzel (Classic)</option>
+                                        <option value="'Lora', serif">Lora (Serif)</option>
+                                        <option value="'Bebas Neue', sans-serif">Bebas Neue (Impact)</option>
+                                        <option value="'Anton', sans-serif">Anton (Strong)</option>
+                                        <option value="'Pacifico', cursive">Pacifico (Script)</option>
+                                        <option value="'Lobster', cursive">Lobster (Retro)</option>
+                                        <option value="'Great Vibes', cursive">Great Vibes (Formal)</option>
+                                        <option value="'Space Mono', monospace">Space Mono (Tech)</option>
+                                        <option value="custom">Custom Font...</option>
                                     </select>
+                                    <input type="text" id="text-font-custom" class="input-field" placeholder="Font Name (e.g. Arial)" style="display: none; margin-bottom: 0.5rem;">
+                                    <label class="btn btn-secondary w-100" style="font-size: 0.7rem; padding: 0.4rem; margin-top: 0.25rem;">
+                                        <i class="fa-solid fa-file-arrow-up"></i> LOAD FONT FILE
+                                        <input type="file" id="text-font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
+                                    </label>
                                     
                                     <div class="flex-spaced">
                                         <div class="flex-row">
@@ -174,9 +193,15 @@
                                             <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
                                         </div>
                                     </div>
-                                    <div class="flex-row" style="margin-top: 0.5rem;">
-                                        <input type="checkbox" id="text-bg-transparent">
-                                        <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent Background</label>
+                                    <div class="flex-row" style="margin-top: 0.5rem; gap: 1rem;">
+                                        <div class="flex-row">
+                                            <input type="checkbox" id="text-bg-transparent">
+                                            <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent BG</label>
+                                        </div>
+                                        <div class="flex-row">
+                                            <input type="checkbox" id="text-wrap">
+                                            <label for="text-wrap" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Wrap Text</label>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -208,6 +233,8 @@
                                         <option value="scroll-right">Scroll Right</option>
                                         <option value="scroll-up">Scroll Up</option>
                                         <option value="scroll-down">Scroll Down</option>
+                                        <option value="zoom-in">Zoom In</option>
+                                        <option value="zoom-out">Zoom Out</option>
                                         <option value="marquee-left">Marquee (Loop) L</option>
                                         <option value="marquee-right">Marquee (Loop) R</option>
                                     </select>
@@ -284,11 +311,22 @@
                                     <option value="'Outfit'">Outfit (Modern)</option>
                                     <option value="'Playfair Display'">Playfair (Elegant)</option>
                                     <option value="'Inter'">Inter (Global)</option>
-                                    <option value="'Dancing Script', cursive">Dancing Script (Playful)</option>
+                                    <option value="'Montserrat'">Montserrat (Bold Sans)</option>
+                                    <option value="'Poppins'">Poppins (Smooth)</option>
+                                    <option value="'Pacifico', cursive">Pacifico (Playful)</option>
                                     <option value="'Bebas Neue', sans-serif">Bebas Neue (Bold)</option>
                                     <option value="'Lobster', cursive">Lobster (Retro)</option>
-                                    <option value="monospace">Monospace (Code)</option>
+                                    <option value="'Anton', sans-serif">Anton (Strong)</option>
+                                    <option value="'Cinzel', serif">Cinzel (Classic)</option>
+                                    <option value="'Great Vibes', cursive">Great Vibes (Formal)</option>
+                                    <option value="'Space Mono', monospace">Monospace (Code)</option>
+                                    <option value="custom">Custom Font...</option>
                                 </select>
+                                <input type="text" id="ds-font-custom" class="input-field" placeholder="Font Name (e.g. Tahoma)" style="display: none; margin-top: 0.5rem;">
+                                <label class="btn btn-secondary w-100" style="font-size: 0.7rem; padding: 0.4rem; margin-top: 0.5rem;">
+                                    <i class="fa-solid fa-file-arrow-up"></i> LOAD FONT FILE
+                                    <input type="file" id="ds-font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
+                                </label>
                             </div>
 
                             <div class="flex-spaced" style="margin-bottom: 0.5rem;">
@@ -296,6 +334,21 @@
                                     <button class="style-btn" id="ds-btn-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
                                     <button class="style-btn" id="ds-btn-italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
                                     <button class="style-btn" id="ds-btn-underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="flex-spaced">
+                                    <label>Font Size</label>
+                                    <span id="ds-font-size-val" style="font-size: 0.75rem; color: var(--accent);">48px</span>
+                                </div>
+                                <input type="range" id="ds-font-size" min="10" max="300" value="48">
+                            </div>
+
+                            <div class="control-group">
+                                <div class="flex-row">
+                                    <input type="checkbox" id="ds-text-wrap" checked>
+                                    <label for="ds-text-wrap" style="margin: 0; font-size: 0.75rem; cursor: pointer;">Wrap Text</label>
                                 </div>
                             </div>
 

@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
             blur: 0,
             glow: 0,
             ratio: '9:16',
+            fontSize: 48,
+            wrapText: true,
             image: null,
             filters: {
                 brightness: 100,
@@ -99,6 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const audioFileName = document.getElementById('audio-file-name');
     const audioVol = document.getElementById('audio-vol');
     const textBgTrans = document.getElementById('text-bg-transparent');
+    const textWrap = document.getElementById('text-wrap');
+
+    const dsFontSize = document.getElementById('ds-font-size');
+    const dsFontSizeVal = document.getElementById('ds-font-size-val');
+    const dsTextWrap = document.getElementById('ds-text-wrap');
 
     const videoRatioBtn = document.getElementById('video-ratio-btn');
     const timelineDurationInput = document.getElementById('timeline-duration');
@@ -116,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             text: "TEXT TO VIDEO\nSTUDIO PRO", 
             font: "'Outfit', sans-serif", 
             size: 48, color: "#ffffff", bgColor: "transparent", 
-            effect: "none", animation: "none", bold: true, italic: false, x: 50, y: 50, speed: 5
+            effect: "none", animation: "none", bold: true, italic: false, wrap: true, x: 50, y: 50, speed: 5
         });
 
         updateRuler();
@@ -175,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         safeAddEvent('add-media-clip-btn', 'click', () => addClip('media', APP.time, 5, { bgType: 'color', color: '#1a1a2e', objectFit: 'cover' }));
-        safeAddEvent('add-text-clip-btn', 'click', () => addClip('text', APP.time, 4, { text: "New Text", font: "'Outfit', sans-serif", size: 36, color: '#ffffff', bgColor: 'transparent', effect: 'none', animation: 'none', speed: 5, x: 50, y: 50 }));
+        safeAddEvent('add-text-clip-btn', 'click', () => addClip('text', APP.time, 4, { text: "New Text", font: "'Outfit', sans-serif", size: 36, color: '#ffffff', bgColor: 'transparent', effect: 'none', animation: 'none', speed: 5, wrap: true, x: 50, y: 50 }));
         safeAddEvent('add-audio-clip-btn', 'click', () => addClip('audio', 0, APP.duration, { src: null, volume: 100 }));
 
         if (tlDeleteBtn) tlDeleteBtn.addEventListener('click', deleteSelectedClip);
@@ -188,11 +195,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bgGradAngle) bgGradAngle.addEventListener('input', (e) => { if(document.getElementById('grad-angle-val')) document.getElementById('grad-angle-val').innerText = e.target.value; const c = getClip(APP.selectedClipId); if(c) { c.angle = e.target.value; renderVideoFrame(); } });
         if (bgFileUpload) bgFileUpload.addEventListener('change', handleMediaUpload);
         if (textContent) textContent.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.text = e.target.value; renderVideoFrame(); renderTimelineClips(); } });
-        if (textFont) textFont.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.font = e.target.value; renderVideoFrame(); } });
+        if (textFont) textFont.addEventListener('change', (e) => { 
+            const c = getClip(APP.selectedClipId); 
+            if(c) { 
+                const customEl = document.getElementById('text-font-custom');
+                if (e.target.value === 'custom') {
+                    customEl.style.display = 'block';
+                    c.font = customEl.value || "'Outfit'";
+                } else {
+                    customEl.style.display = 'none';
+                    c.font = e.target.value; 
+                }
+                renderVideoFrame(); 
+            } 
+        });
+        if (document.getElementById('text-font-custom')) document.getElementById('text-font-custom').addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c && textFont.value === 'custom') {
+                c.font = e.target.value;
+                renderVideoFrame();
+            }
+        });
         if (textSize) textSize.addEventListener('input', (e) => { if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = e.target.value + 'px'; const c = getClip(APP.selectedClipId); if(c) { c.size = parseInt(e.target.value); renderVideoFrame(); } });
         if (textColor) textColor.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.color = e.target.value; renderVideoFrame(); } });
         if (textBgColor) textBgColor.addEventListener('input', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.bgColor = e.target.value; if(textBgTrans) textBgTrans.checked = false; renderVideoFrame(); } });
         if (textBgTrans) textBgTrans.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.bgColor = e.target.checked ? 'transparent' : textBgColor.value; renderVideoFrame(); } });
+        if (textWrap) textWrap.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.wrap = e.target.checked; renderVideoFrame(); } });
         if (textEffect) textEffect.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.effect = e.target.value; updateEffectSettingsVisibility(); renderVideoFrame(); } });
         if (textAnimation) textAnimation.addEventListener('change', (e) => { const c = getClip(APP.selectedClipId); if(c) { c.animation = e.target.value; updateEffectSettingsVisibility(); renderVideoFrame(); } });
         if (effectSpeed) effectSpeed.addEventListener('input', (e) => { if(document.getElementById('effect-speed-val')) document.getElementById('effect-speed-val').innerText = e.target.value; const c = getClip(APP.selectedClipId); if(c) { c.speed = parseInt(e.target.value); renderVideoFrame(); } });
@@ -217,6 +245,72 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
+        // --- Core Font Loader Logic ---
+        async function loadFontFile(file, isDesigner = false) {
+            if (!file) return;
+            const fontName = file.name.split('.')[0].replace(/[^a-z0-9]/gi, '_');
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                const fontBuffer = e.target.result;
+                const fontFace = new FontFace(fontName, fontBuffer);
+                
+                try {
+                    const loadedFace = await fontFace.load();
+                    document.fonts.add(loadedFace);
+                    console.log(`Font loaded: ${fontName}`);
+                    
+                    // Add to both selects
+                    const selects = [document.getElementById('text-font'), document.getElementById('ds-font')];
+                    selects.forEach(select => {
+                        if (select) {
+                            // Check if font already in list
+                            let exists = false;
+                            for(let i=0; i<select.options.length; i++) if(select.options[i].value === fontName) exists = true;
+                            
+                            if(!exists) {
+                                const opt = document.createElement('option');
+                                opt.value = fontName;
+                                opt.innerText = `${file.name.split('.')[0]} (Uploaded)`;
+                                select.insertBefore(opt, select.querySelector('option[value="custom"]'));
+                            }
+                            
+                            // Select it for the current tab
+                            if((isDesigner && select.id === 'ds-font') || (!isDesigner && select.id === 'text-font')) {
+                                select.value = fontName;
+                            }
+                        }
+                    });
+
+                    // Update State and Preview
+                    if (isDesigner) {
+                        APP.designer.font = fontName;
+                        renderDesignerPreview();
+                    } else {
+                        const c = getClip(APP.selectedClipId);
+                        if (c) {
+                            c.font = fontName;
+                            // Hide custom input if it was open
+                            const customEl = document.getElementById('text-font-custom');
+                            if(customEl) customEl.style.display = 'none';
+                            renderVideoFrame();
+                        }
+                    }
+                } catch (err) {
+                    console.error("Font loading failed:", err);
+                    alert("Failed to load font file. Please check if the file is valid.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        if (document.getElementById('text-font-upload')) {
+            document.getElementById('text-font-upload').addEventListener('change', (e) => loadFontFile(e.target.files[0], false));
+        }
+        if (document.getElementById('ds-font-upload')) {
+            document.getElementById('ds-font-upload').addEventListener('change', (e) => loadFontFile(e.target.files[0], true));
+        }
 
         window.addEventListener('keydown', (e) => { if ((e.key === 'Delete' || e.key === 'Backspace') && document.activeElement.tagName === 'BODY' && APP.selectedClipId) { deleteSelectedClip(); } });
 
@@ -257,19 +351,47 @@ document.addEventListener('DOMContentLoaded', () => {
             'ds-bg-type': 'bgType', 'ds-bg-color': 'bgColor', 'ds-bg-grad1': 'grad1', 
             'ds-bg-grad2': 'grad2', 'ds-bg-angle': 'angle', 'ds-text-content': 'text',
             'ds-font': 'font', 'ds-text-color': 'color', 'ds-text-bg': 'bgColorText',
-            'ds-fx-shadow': 'shadow', 'ds-fx-blur': 'blur', 'ds-fx-glow': 'glow'
+            'ds-fx-shadow': 'shadow', 'ds-fx-blur': 'blur', 'ds-fx-glow': 'glow',
+            'ds-font-size': 'fontSize'
         };
 
         Object.entries(dsInputs).forEach(([id, key]) => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', (e) => {
-                APP.designer[key] = e.target.value;
+                if (id === 'ds-font') {
+                    const customEl = document.getElementById('ds-font-custom');
+                    if (e.target.value === 'custom') {
+                        customEl.style.display = 'block';
+                        APP.designer.font = customEl.value || "'Outfit'";
+                    } else {
+                        customEl.style.display = 'none';
+                        APP.designer[key] = e.target.value;
+                    }
+                } else {
+                    APP.designer[key] = e.target.value;
+                }
+                
                 if (id === 'ds-bg-type') {
                     document.getElementById('ds-bg-solid-ctrl').style.display = e.target.value === 'solid' ? 'flex' : 'none';
                     document.getElementById('ds-bg-grad-ctrl').style.display = e.target.value === 'gradient' ? 'flex' : 'none';
                 }
+                if (id === 'ds-font-size') {
+                    if (dsFontSizeVal) dsFontSizeVal.innerText = `${e.target.value}px`;
+                }
                 renderDesignerPreview();
             });
+        });
+
+        if (document.getElementById('ds-font-custom')) document.getElementById('ds-font-custom').addEventListener('input', (e) => {
+            if (document.getElementById('ds-font').value === 'custom') {
+                APP.designer.font = e.target.value;
+                renderDesignerPreview();
+            }
+        });
+
+        if (dsTextWrap) dsTextWrap.addEventListener('change', (e) => {
+            APP.designer.wrapText = e.target.checked;
+            renderDesignerPreview();
         });
 
         document.getElementById('ds-btn-bold').addEventListener('click', () => { APP.designer.bold = !APP.designer.bold; document.getElementById('ds-btn-bold').classList.toggle('active', APP.designer.bold); renderDesignerPreview(); });
@@ -384,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let style = `
                 left: 50%; top: 50%; transform: translate(-50%, -50%);
                 font-family: ${ds.font}, sans-serif;
-                font-size: 48px;
+                font-size: ${ds.fontSize}px;
                 color: ${ds.color};
                 background-color: ${ds.bgColorText};
                 padding: 15px 30px;
@@ -394,6 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 text-decoration: ${ds.underline ? 'underline' : 'none'};
                 text-align: center;
                 word-break: break-word;
+                white-space: ${ds.wrapText ? 'pre-wrap' : 'nowrap'};
+                width: ${ds.wrapText ? '80%' : 'auto'};
                 transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             `;
 
@@ -464,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Draw Text
         ctx.save();
-        const fontSize = (48 / 480) * canvas.height; // Proportional font size
+        const fontSize = (ds.fontSize / 480) * canvas.height; // Proportional font size
         const fontName = ds.font.replace(/'/g, '');
         ctx.font = `${ds.bold ? 'bold' : ''} ${ds.italic ? 'italic' : ''} ${fontSize}px ${fontName}, sans-serif`;
         ctx.textAlign = 'center';
@@ -472,6 +596,25 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const tx = canvas.width / 2;
         const ty = canvas.height / 2;
+
+        const words = ds.text.split(' ');
+        const lines = [];
+        if (ds.wrapText) {
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                const word = words[i];
+                const width = ctx.measureText(currentLine + " " + word).width;
+                if (width < canvas.width * 0.8) {
+                    currentLine += " " + word;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+        } else {
+            lines.push(ds.text);
+        }
 
         // Visual effects for export
         let shadows = [];
@@ -498,18 +641,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Draw background box for text if exists
         if (ds.bgColorText !== 'transparent' && ds.bgColorText !== '#00000000') {
-            const metrics = ctx.measureText(ds.text);
+            const maxLineWidth = Math.max(...lines.map(l => ctx.measureText(l).width));
+            const totalHeight = lines.length * fontSize * 1.2;
             const padding = fontSize * 0.5;
             ctx.fillStyle = ds.bgColorText;
-            ctx.fillRect(tx - metrics.width/2 - padding, ty - fontSize/2 - padding, metrics.width + padding*2, fontSize + padding*2);
+            ctx.fillRect(tx - maxLineWidth/2 - padding, ty - totalHeight/2 - padding, maxLineWidth + padding*2, totalHeight + padding*2);
         }
 
         ctx.fillStyle = ds.color;
-        if (ds.underline) {
-            const metrics = ctx.measureText(ds.text);
-            ctx.fillRect(tx - metrics.width/2, ty + fontSize/2, metrics.width, fontSize * 0.1);
-        }
-        ctx.fillText(ds.text, tx, ty);
+        lines.forEach((line, index) => {
+            const lineY = ty + (index - (lines.length - 1) / 2) * fontSize * 1.2;
+            if (ds.underline) {
+                const metrics = ctx.measureText(line);
+                ctx.fillRect(tx - metrics.width/2, lineY + fontSize/2, metrics.width, fontSize * 0.1);
+            }
+            ctx.fillText(line, tx, lineY);
+        });
         ctx.restore();
 
         // 4. Download Trigger
@@ -584,9 +731,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!id) { if(propEmpty) propEmpty.classList.add('active'); return; }
         const clip = getClip(id);
-        if (track === 'media') { if(propMedia) propMedia.classList.add('active'); bgType.value = clip.bgType || 'color'; updateMediaInspectorVisibility(); if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; if(bgColorHex) bgColorHex.value = bgColorVal.value; if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; if(bgGradAngle) bgGradAngle.value = clip.angle || 135; if(bgFileName) bgFileName.innerText = clip.fileName || ""; } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; textFont.value = clip.font || "'Outfit', sans-serif"; textSize.value = clip.size || 36; if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = textSize.value + 'px'; textColor.value = clip.color || "#ffffff";
+        if (track === 'media') { if(propMedia) propMedia.classList.add('active'); bgType.value = clip.bgType || 'color'; updateMediaInspectorVisibility(); if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; if(bgColorHex) bgColorHex.value = bgColorVal.value; if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; if(bgGradAngle) bgGradAngle.value = clip.angle || 135; if(bgFileName) bgFileName.innerText = clip.fileName || ""; } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; 
+        
+        let foundFont = false;
+        for (let i = 0; i < textFont.options.length; i++) {
+            if (textFont.options[i].value === clip.font) {
+                textFont.selectedIndex = i;
+                foundFont = true;
+                break;
+            }
+        }
+        const customEl = document.getElementById('text-font-custom');
+        if (!foundFont && clip.font) {
+            textFont.value = 'custom';
+            if (customEl) {
+                customEl.value = clip.font.replace(/'/g, '');
+                customEl.style.display = 'block';
+            }
+        } else {
+            if (customEl) customEl.style.display = 'none';
+        }
+
+        textSize.value = clip.size || 36; if(document.getElementById('text-size-val')) document.getElementById('text-size-val').innerText = textSize.value + 'px'; textColor.value = clip.color || "#ffffff";
         if(textBgColor) textBgColor.value = (clip.bgColor === 'transparent' || !clip.bgColor) ? '#000000' : clip.bgColor;
         if(textBgTrans) textBgTrans.checked = clip.bgColor === 'transparent';
+        if(textWrap) textWrap.checked = clip.wrap !== false; 
         textEffect.value = clip.effect || 'none'; 
         textAnimation.value = clip.animation || 'none'; 
         updateEffectSettingsVisibility();
@@ -595,7 +764,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMediaInspectorVisibility() { if(bgColorGroup) bgColorGroup.style.display = bgType.value === 'color' ? 'flex' : 'none'; if(bgGradGroup) bgGradGroup.style.display = bgType.value === 'gradient' ? 'flex' : 'none'; if(bgUploadGroup) bgUploadGroup.style.display = ['image', 'video'].includes(bgType.value) ? 'flex' : 'none'; }
     function updateEffectSettingsVisibility() { 
-        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right'];
+        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out'];
         const hasMotion = motionList.includes(textAnimation.value) || ['fade-scale', 'staggered-slide'].includes(textEffect.value); 
         const effectSettings = document.getElementById('effect-settings');
         if (effectSettings) effectSettings.style.display = hasMotion ? 'block' : 'none'; 
@@ -620,8 +789,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (anim === 'scroll-left') tx -= dt * spd * 10; else if (anim === 'scroll-right') tx += dt * spd * 10; else if (anim === 'scroll-up') ty -= dt * spd * 10; else if (anim === 'scroll-down') ty += dt * spd * 10; else if (anim === 'marquee-left') tx = 110 - ((dt * spd * 20) % 120); else if (anim === 'marquee-right') tx = -10 + ((dt * spd * 20) % 120);
 
             // Apply Visual Style Effects
-            let styleCss = `left: ${tx}%; top: ${ty}%; font-family: ${t.font}; font-size: ${t.size}px; color: ${t.color}; background-color: ${t.bgColor}; font-weight: ${t.bold ? 'bold' : 'normal'}; font-style: ${t.italic ? 'italic' : 'normal'}; transform: translate(-50%, -50%);`;
+            let styleCss = `left: ${tx}%; top: ${ty}%; font-family: ${t.font}; font-size: ${t.size}px; color: ${t.color}; background-color: ${t.bgColor}; font-weight: ${t.bold ? 'bold' : 'normal'}; font-style: ${t.italic ? 'italic' : 'normal'}; transform: translate(-50%, -50%); white-space: ${t.wrap !== false ? 'pre-wrap' : 'nowrap'}; width: ${t.wrap !== false ? '80%' : 'auto'};`;
             
+            let transform = 'translate(-50%, -50%)';
+            if (anim === 'zoom-in') {
+                const scale = 0.5 + (dt * spd * 0.2); // Start small, grow
+                transform += ` scale(${scale})`;
+            } else if (anim === 'zoom-out') {
+                const scale = Math.max(0.1, 2.0 - (dt * spd * 0.2)); // Start large, shrink
+                transform += ` scale(${scale})`;
+            }
+            styleCss += `transform: ${transform};`;
+
             if (t.effect === 'glow') {
                 styleCss += `text-shadow: 0 0 10px ${t.color}, 0 0 20px ${t.color}, 0 0 30px ${t.color};`;
             } else if (t.effect === 'shadow') {
@@ -659,6 +838,18 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.textBaseline = 'middle';
             
             // Apply Visual Style for Export
+            if (anim === 'zoom-in') {
+                const scale = 0.5 + (dt * spd * 0.2);
+                ctx.translate(tx, ty);
+                ctx.scale(scale, scale);
+                ctx.translate(-tx, -ty);
+            } else if (anim === 'zoom-out') {
+                const scale = Math.max(0.1, 2.0 - (dt * spd * 0.2));
+                ctx.translate(tx, ty);
+                ctx.scale(scale, scale);
+                ctx.translate(-tx, -ty);
+            }
+
             if (t.effect === 'glow') {
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = t.color;
@@ -677,9 +868,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             ctx.fillStyle = t.color;
-            t.text.split('\n').forEach((l, i) => {
+            
+            let linesToDraw = [];
+            if (t.wrap !== false) {
+                const words = t.text.split(' ');
+                let currentLine = words[0];
+                for (let i = 1; i < words.length; i++) {
+                    const word = words[i];
+                    const width = ctx.measureText(currentLine + " " + word).width;
+                    if (width < canvas.width * 0.8) {
+                        currentLine += " " + word;
+                    } else {
+                        linesToDraw.push(currentLine);
+                        currentLine = word;
+                    }
+                }
+                linesToDraw.push(currentLine);
+            } else {
+                linesToDraw = t.text.split('\n');
+            }
+
+            linesToDraw.forEach((l, i) => {
                 const cleaned = l.replace(/<i\b[^>]*>.*?<\/i>/gi, '★').replace(/<[^>]*>/g, '');
-                const lineY = ty + (i - (t.text.split('\n').length-1)/2)*fS*1.2;
+                const lineY = ty + (i - (linesToDraw.length-1)/2)*fS*1.2;
                 if (t.effect === 'outline') ctx.strokeText(cleaned, tx, lineY);
                 ctx.fillText(cleaned, tx, lineY);
             });
