@@ -13,7 +13,7 @@
     --clip-text: #f59e0b;
     --clip-audio: #a855f7;
     --sidebar-width: 40%;
-    --timeline-height: 15vh;
+    --timeline-height: 35vh;
 }
 
 * {
@@ -42,7 +42,7 @@ body {
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 120vh;
     padding: 0;
     overflow: hidden;
 }
@@ -60,7 +60,7 @@ body {
 .flex-row { display: flex; gap: 0.5rem; align-items: center; }
 .flex-spaced { display: flex; justify-content: space-between; gap: 0.5rem; align-items: center; }
 
-h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;}
+h1 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;}
 
 /* New Property Panel Header */
 .prop-header {
@@ -68,7 +68,7 @@ h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 11px solid var(--glass-border);
     padding-bottom: 0.5rem;
 }
 
@@ -653,7 +653,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     padding: 0.75rem 1.25rem; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--glass-border);
     z-index: 10;
 }
-.status-indicator { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
+.status-indicator { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 0.5rem; color: var(--text-muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
 .dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
@@ -667,7 +667,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
     position: relative;
     overflow: hidden;
-    height: 100%;
+    height: 160%;
     /* aspect-ratio set dynamically */
 }
 
@@ -740,7 +740,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
 }
 
 .ruler-container {
-    height: 30px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.5);
+    height: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.5);
     position: relative;
 }
 .playhead {
