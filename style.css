@@ -949,3 +949,86 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
 
 .sidebar-toggle-btn { color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
 
+/* --- Image / GIF Size Adjustment Panel Styles --- */
+#studio-image-size-panel {
+    animation: slideUp 0.25s ease-out;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05));
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 0.75rem;
+}
+
+#studio-image-size-panel .fx-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--accent);
+}
+
+#studio-img-size-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: var(--accent);
+    font-weight: 700;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#studio-img-size-btn:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.2));
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    transform: translateY(-1px);
+}
+
+#merge-image-size-panel {
+    animation: slideUp 0.3s ease-out;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.04), rgba(163, 85, 247, 0.06));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+}
+
+#merge-image-size-panel:hover {
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+}
+
+#merge-image-size-panel .fx-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#merge-img-custom-size,
+#studio-img-custom-size {
+    animation: slideUp 0.2s ease-out;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 0.5rem;
+}
+
+#merge-img-apply-btn {
+    background: linear-gradient(135deg, var(--accent), #3b82f6);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#merge-img-apply-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* GIF badge for imported GIF items in timeline */
+.clip-node.is-gif::after {
+    content: 'GIF';
+    font-size: 0.5rem;
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}

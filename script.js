@@ -117,6 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.getElementById('progress-fill');
     const closeOverlayBtn = document.getElementById('close-overlay-btn');
 
+    // --- Image Size UI Helpers (module-level so handleMediaUpload can call them) ---
+    function updateStudioImgCustomSize() {
+        const fitSel = document.getElementById('studio-img-fit');
+        const customDiv = document.getElementById('studio-img-custom-size');
+        if (fitSel && customDiv) {
+            customDiv.style.display = fitSel.value === 'custom' ? 'block' : 'none';
+        }
+    }
+
     // --- Initialization ---
     function init() {
         addClip('media', 0, 10, { bgType: 'gradient', grad1: '#10b981', grad2: '#3b82f6', angle: 135 });
@@ -453,20 +462,112 @@ document.addEventListener('DOMContentLoaded', () => {
                 const file = e.target.files[0];
                 if (!file) return;
                 const url = URL.createObjectURL(file);
+                const isGif = file.type === 'image/gif';
                 const imgObj = new Image();
                 imgObj.src = url;
                 imgObj.onload = () => {
-                    addClip('media', APP.time, 5, { 
+                    const clipId = addClip('media', APP.time, 5, { 
                         bgType: 'image', 
                         imgObj: imgObj, 
                         srcUrl: url, 
                         fileName: file.name,
-                        objectFit: 'cover'
+                        isGif: isGif,
+                        objectFit: 'cover',
+                        imgFit: 'cover',
+                        imgWidth: 100,
+                        imgHeight: 100,
+                        imgPosX: 50,
+                        imgPosY: 50
                     });
+                    // Show the merge image size panel
+                    const panel = document.getElementById('merge-image-size-panel');
+                    if (panel) panel.style.display = 'block';
+                    const fitSel = document.getElementById('merge-img-fit');
+                    if (fitSel) fitSel.value = 'cover';
+                    updateMergeImgCustomSize();
                     document.querySelector('.tab-btn[data-tab="editor"]').click();
                 };
             });
         }
+
+        // --- Studio Image Size Panel Listeners ---
+        const studioImgFit = document.getElementById('studio-img-fit');
+        if (studioImgFit) studioImgFit.addEventListener('change', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgFit = e.target.value; updateStudioImgCustomSize(); renderVideoFrame(); }
+        });
+
+        const studioImgWidth = document.getElementById('studio-img-width');
+        if (studioImgWidth) studioImgWidth.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgWidth = parseInt(e.target.value); document.getElementById('studio-img-w-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const studioImgHeight = document.getElementById('studio-img-height');
+        if (studioImgHeight) studioImgHeight.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgHeight = parseInt(e.target.value); document.getElementById('studio-img-h-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const studioImgX = document.getElementById('studio-img-x');
+        if (studioImgX) studioImgX.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgPosX = parseInt(e.target.value); document.getElementById('studio-img-x-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const studioImgY = document.getElementById('studio-img-y');
+        if (studioImgY) studioImgY.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgPosY = parseInt(e.target.value); document.getElementById('studio-img-y-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const studioImgSizeBtn = document.getElementById('studio-img-size-btn');
+        if (studioImgSizeBtn) studioImgSizeBtn.addEventListener('click', () => {
+            // Toggle the custom size panel or just a visual confirm flash
+            const customDiv = document.getElementById('studio-img-custom-size');
+            const fitSel = document.getElementById('studio-img-fit');
+            if (fitSel) fitSel.value = fitSel.value === 'custom' ? 'cover' : 'custom';
+            updateStudioImgCustomSize();
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgFit = document.getElementById('studio-img-fit').value; renderVideoFrame(); }
+        });
+
+        // --- Merge Image Size Panel Listeners ---
+        function updateMergeImgCustomSize() {
+            const fitSel = document.getElementById('merge-img-fit');
+            const customDiv = document.getElementById('merge-img-custom-size');
+            if (fitSel && customDiv) {
+                customDiv.style.display = fitSel.value === 'custom' ? 'block' : 'none';
+            }
+        }
+
+        const mergeImgFit = document.getElementById('merge-img-fit');
+        if (mergeImgFit) mergeImgFit.addEventListener('change', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c && c.bgType === 'image') { c.imgFit = e.target.value; updateMergeImgCustomSize(); renderVideoFrame(); }
+        });
+        const mergeImgWidth = document.getElementById('merge-img-width');
+        if (mergeImgWidth) mergeImgWidth.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgWidth = parseInt(e.target.value); document.getElementById('merge-img-w-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const mergeImgHeight = document.getElementById('merge-img-height');
+        if (mergeImgHeight) mergeImgHeight.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgHeight = parseInt(e.target.value); document.getElementById('merge-img-h-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const mergeImgX = document.getElementById('merge-img-x');
+        if (mergeImgX) mergeImgX.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgPosX = parseInt(e.target.value); document.getElementById('merge-img-x-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const mergeImgY = document.getElementById('merge-img-y');
+        if (mergeImgY) mergeImgY.addEventListener('input', (e) => {
+            const c = getClip(APP.selectedClipId);
+            if (c) { c.imgPosY = parseInt(e.target.value); document.getElementById('merge-img-y-val').innerText = e.target.value + '%'; renderVideoFrame(); }
+        });
+        const mergeImgApplyBtn = document.getElementById('merge-img-apply-btn');
+        if (mergeImgApplyBtn) mergeImgApplyBtn.addEventListener('click', () => {
+            renderVideoFrame();
+            // Switch to Studio to show live result
+            document.querySelector('.tab-btn[data-tab="editor"]').click();
+        });
 
         if (mergeExportBtn) {
             mergeExportBtn.addEventListener('click', () => {
@@ -906,7 +1007,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!id) { if(propEmpty) propEmpty.classList.add('active'); return; }
         const clip = getClip(id);
-        if (track === 'media') { if(propMedia) propMedia.classList.add('active'); bgType.value = clip.bgType || 'color'; updateMediaInspectorVisibility(); if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; if(bgColorHex) bgColorHex.value = bgColorVal.value; if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; if(bgGradAngle) bgGradAngle.value = clip.angle || 135; if(bgFileName) bgFileName.innerText = clip.fileName || ""; } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; 
+        if (track === 'media') { 
+            if(propMedia) propMedia.classList.add('active'); 
+            bgType.value = clip.bgType || 'color'; 
+            updateMediaInspectorVisibility(); 
+            if(bgColorVal) bgColorVal.value = clip.color || '#1a1a2e'; 
+            if(bgColorHex) bgColorHex.value = bgColorVal.value; 
+            if(bgGrad1) bgGrad1.value = clip.grad1 || '#10b981'; 
+            if(bgGrad2) bgGrad2.value = clip.grad2 || '#3b82f6'; 
+            if(bgGradAngle) bgGradAngle.value = clip.angle || 135; 
+            if(bgFileName) bgFileName.innerText = clip.fileName || '';
+            // Restore image size panel
+            const studioSizePanel = document.getElementById('studio-image-size-panel');
+            if (studioSizePanel) {
+                if (clip.bgType === 'image') {
+                    studioSizePanel.style.display = 'block';
+                    const fitSel = document.getElementById('studio-img-fit');
+                    if (fitSel) fitSel.value = clip.imgFit || 'cover';
+                    const wEl = document.getElementById('studio-img-width'); if (wEl) wEl.value = clip.imgWidth || 100;
+                    const hEl = document.getElementById('studio-img-height'); if (hEl) hEl.value = clip.imgHeight || 100;
+                    const xEl = document.getElementById('studio-img-x'); if (xEl) xEl.value = clip.imgPosX || 50;
+                    const yEl = document.getElementById('studio-img-y'); if (yEl) yEl.value = clip.imgPosY || 50;
+                    const wV = document.getElementById('studio-img-w-val'); if (wV) wV.innerText = (clip.imgWidth || 100) + '%';
+                    const hV = document.getElementById('studio-img-h-val'); if (hV) hV.innerText = (clip.imgHeight || 100) + '%';
+                    const xV = document.getElementById('studio-img-x-val'); if (xV) xV.innerText = (clip.imgPosX || 50) + '%';
+                    const yV = document.getElementById('studio-img-y-val'); if (yV) yV.innerText = (clip.imgPosY || 50) + '%';
+                    updateStudioImgCustomSize();
+                } else {
+                    studioSizePanel.style.display = 'none';
+                }
+            }
+        } else if (track === 'text') { if(propText) propText.classList.add('active'); textContent.value = clip.text || ''; 
         
         let foundFont = false;
         for (let i = 0; i < textFont.options.length; i++) {
@@ -963,7 +1094,47 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    function handleMediaUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(bgFileName) bgFileName.innerText = file.name; const url = URL.createObjectURL(file); c.srcUrl = url; if (file.type.startsWith('video/')) { c.bgType = 'video'; c.videoObj = document.createElement('video'); c.videoObj.src = url; c.videoObj.muted = true; c.videoObj.loop = true; c.videoObj.playsInline = true; } else { c.bgType = 'image'; c.imgObj = new Image(); c.imgObj.src = url; } updateMediaInspectorVisibility(); renderTimelineClips(); renderVideoFrame(); } }
+    function handleMediaUpload(e) { 
+        const file = e.target.files[0]; 
+        if(!file) return; 
+        const c = getClip(APP.selectedClipId); 
+        if(c) { 
+            c.fileName = file.name; 
+            if(bgFileName) bgFileName.innerText = file.name; 
+            const url = URL.createObjectURL(file); 
+            c.srcUrl = url; 
+            if (file.type.startsWith('video/')) { 
+                c.bgType = 'video'; 
+                c.videoObj = document.createElement('video'); 
+                c.videoObj.src = url; 
+                c.videoObj.muted = true; 
+                c.videoObj.loop = true; 
+                c.videoObj.playsInline = true; 
+                document.getElementById('studio-image-size-panel').style.display = 'none';
+            } else { 
+                c.bgType = 'image'; 
+                c.imgObj = new Image(); 
+                c.imgObj.src = url; 
+                // For GIF, also keep the URL for tag-based rendering
+                c.isGif = file.type === 'image/gif';
+                // Set default image sizing
+                if (!c.imgFit) c.imgFit = 'cover';
+                if (!c.imgWidth) c.imgWidth = 100;
+                if (!c.imgHeight) c.imgHeight = 100;
+                if (!c.imgPosX) c.imgPosX = 50;
+                if (!c.imgPosY) c.imgPosY = 50;
+                // Show image size panel
+                const panel = document.getElementById('studio-image-size-panel');
+                if (panel) panel.style.display = 'block';
+                const fitSel = document.getElementById('studio-img-fit');
+                if (fitSel) fitSel.value = c.imgFit || 'cover';
+                updateStudioImgCustomSize();
+            } 
+            updateMediaInspectorVisibility(); 
+            renderTimelineClips(); 
+            renderVideoFrame(); 
+        } 
+    }
     function handleAudioUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(audioFileName) audioFileName.innerText = file.name; c.audioObj = new Audio(URL.createObjectURL(file)); c.audioObj.volume = (c.volume || 100) / 100; } }
     function makeClipInteractive(el, clip) { el.addEventListener('mousedown', (e) => { e.preventDefault(); const startX = (e.touches ? e.touches[0].clientX : e.clientX); const initStart = clip.start; const initEnd = clip.end; const isL = e.target.classList.contains('left'); const isR = e.target.classList.contains('right'); const move = (me) => { const dx = ((me.touches ? me.touches[0].clientX : me.clientX) - startX) / APP.zoom; if (isL) clip.start = Math.max(0, Math.min(clip.end - 0.5, initStart + dx)); else if (isR) clip.end = Math.max(clip.start + 0.5, Math.min(APP.duration, initEnd + dx)); else { const dur = initEnd - initStart; clip.start = Math.max(0, Math.min(APP.duration - dur, initStart + dx)); clip.end = clip.start + dur; } el.style.left = `${clip.start * APP.zoom}px`; el.style.width = `${(clip.end - clip.start) * APP.zoom}px`; renderVideoFrame(); }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); renderTimelineClips(); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); e.stopPropagation(); }); }
     function renderTimelineClips() { Object.keys(trackContents).forEach(track => { trackContents[track].innerHTML = ''; APP.tracks[track].forEach(clip => { const el = document.createElement('div'); el.className = `clip-node ${APP.selectedClipId === clip.id ? 'selected' : ''}`; el.style.left = `${clip.start * APP.zoom}px`; el.style.width = `${(clip.end - clip.start) * APP.zoom}px`; el.innerHTML = `<div class="clip-handle left"></div><span class="clip-innerText">${clip.text ? clip.text.split('\n')[0] : (clip.bgType || 'Clip')}</span><div class="clip-handle right"></div>`; el.addEventListener('click', () => selectClip(clip.id, track)); el.setAttribute('data-id', clip.id); makeClipInteractive(el, clip); trackContents[track].appendChild(el); }); }); }
@@ -974,7 +1145,59 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const time = APP.time; frameBg.innerHTML = ''; frameObjects.innerHTML = '';
-        APP.tracks.media.filter(c => time >= c.start && time <= c.end).forEach(m => { const el = document.createElement('div'); el.className = 'frame-layer'; if (m.bgType === 'color') el.style.backgroundColor = m.color; else if (m.bgType === 'gradient') el.style.background = `linear-gradient(${m.angle}deg, ${m.grad1}, ${m.grad2})`; else if (m.bgType === 'image' && m.srcUrl) { el.style.backgroundImage = `url(${m.srcUrl})`; el.style.backgroundSize = m.objectFit || 'cover'; el.style.backgroundPosition = 'center'; } else if (m.bgType === 'video' && m.videoObj) { m.videoObj.currentTime = time - m.start; m.videoObj.style.width = '100%'; m.videoObj.style.height = '100%'; m.videoObj.style.objectFit = m.objectFit || 'cover'; el.appendChild(m.videoObj); } frameBg.appendChild(el); });
+        APP.tracks.media.filter(c => time >= c.start && time <= c.end).forEach(m => { 
+            const el = document.createElement('div'); 
+            el.className = 'frame-layer'; 
+            if (m.bgType === 'color') el.style.backgroundColor = m.color; 
+            else if (m.bgType === 'gradient') el.style.background = `linear-gradient(${m.angle}deg, ${m.grad1}, ${m.grad2})`; 
+            else if (m.bgType === 'image' && m.srcUrl) { 
+                if (m.isGif) {
+                    // Use an <img> tag for animated GIF support
+                    const gifImg = document.createElement('img');
+                    gifImg.src = m.srcUrl;
+                    gifImg.style.position = 'absolute';
+                    if (!m.imgFit || m.imgFit === 'cover') {
+                        gifImg.style.width = '100%';
+                        gifImg.style.height = '100%';
+                        gifImg.style.objectFit = 'cover';
+                        gifImg.style.objectPosition = 'center';
+                    } else if (m.imgFit === 'contain') {
+                        gifImg.style.width = '100%';
+                        gifImg.style.height = '100%';
+                        gifImg.style.objectFit = 'contain';
+                        gifImg.style.objectPosition = 'center';
+                    } else if (m.imgFit === 'fill') {
+                        gifImg.style.width = '100%';
+                        gifImg.style.height = '100%';
+                        gifImg.style.objectFit = 'fill';
+                    } else if (m.imgFit === 'custom') {
+                        gifImg.style.width = `${m.imgWidth || 100}%`;
+                        gifImg.style.height = `${m.imgHeight || 100}%`;
+                        gifImg.style.left = `${m.imgPosX || 50}%`;
+                        gifImg.style.top = `${m.imgPosY || 50}%`;
+                        gifImg.style.transform = 'translate(-50%, -50%)';
+                        gifImg.style.objectFit = 'fill';
+                    }
+                    el.appendChild(gifImg);
+                } else if (m.imgFit === 'custom') {
+                    el.style.backgroundImage = `url(${m.srcUrl})`;
+                    el.style.backgroundSize = `${m.imgWidth || 100}% ${m.imgHeight || 100}%`;
+                    el.style.backgroundPosition = `${m.imgPosX || 50}% ${m.imgPosY || 50}%`;
+                    el.style.backgroundRepeat = 'no-repeat';
+                } else {
+                    el.style.backgroundImage = `url(${m.srcUrl})`;
+                    el.style.backgroundSize = m.imgFit || m.objectFit || 'cover'; 
+                    el.style.backgroundPosition = 'center'; 
+                }
+            } else if (m.bgType === 'video' && m.videoObj) { 
+                m.videoObj.currentTime = time - m.start; 
+                m.videoObj.style.width = '100%'; 
+                m.videoObj.style.height = '100%'; 
+                m.videoObj.style.objectFit = m.objectFit || 'cover'; 
+                el.appendChild(m.videoObj); 
+            } 
+            frameBg.appendChild(el); 
+        });
         APP.tracks.text.filter(c => time >= c.start && time <= c.end).forEach(t => { 
             const el = document.createElement('div'); el.className = 'frame-obj-text'; el.innerHTML = t.text; 
             const dt = time - t.start; const spd = t.speed || 5;

@@ -101,12 +101,60 @@
                                     <span>AUDIO</span>
                                     <input type="file" id="merge-audio-upload" accept="audio/*" hidden>
                                 </label>
-                                <label class="import-card" title="Import Image Layer">
+                                <label class="import-card" title="Import Image / GIF Layer">
                                     <i class="fa-solid fa-image"></i>
-                                    <span>IMAGE</span>
-                                    <input type="file" id="merge-image-upload" accept="image/*" hidden>
+                                    <span>IMAGE / GIF</span>
+                                    <input type="file" id="merge-image-upload" accept="image/*,image/gif" hidden>
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- Merge Image Size Adjuster (shown only after image/GIF import) -->
+                        <div class="fx-card" id="merge-image-size-panel" style="display:none;">
+                            <div class="fx-title"><i class="fa-solid fa-expand-arrows-alt" style="color:var(--accent);"></i> Adjust Image Size</div>
+                            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Resize and position the imported image/GIF on the timeline scene.</p>
+                            <div class="control-group">
+                                <label>Fit Mode</label>
+                                <select id="merge-img-fit" class="input-field styled-select">
+                                    <option value="cover">Cover (Fill)</option>
+                                    <option value="contain">Contain (Fit)</option>
+                                    <option value="fill">Stretch</option>
+                                    <option value="custom">Custom Size</option>
+                                </select>
+                            </div>
+                            <div id="merge-img-custom-size" style="display:none;">
+                                <div class="control-group">
+                                    <div class="flex-spaced">
+                                        <label>Width</label>
+                                        <span id="merge-img-w-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
+                                    </div>
+                                    <input type="range" id="merge-img-width" min="10" max="200" value="100">
+                                </div>
+                                <div class="control-group">
+                                    <div class="flex-spaced">
+                                        <label>Height</label>
+                                        <span id="merge-img-h-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
+                                    </div>
+                                    <input type="range" id="merge-img-height" min="10" max="200" value="100">
+                                </div>
+                                <div class="control-group">
+                                    <div class="flex-spaced">
+                                        <label>Horizontal Position</label>
+                                        <span id="merge-img-x-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
+                                    </div>
+                                    <input type="range" id="merge-img-x" min="0" max="100" value="50">
+                                </div>
+                                <div class="control-group">
+                                    <div class="flex-spaced">
+                                        <label>Vertical Position</label>
+                                        <span id="merge-img-y-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
+                                    </div>
+                                    <input type="range" id="merge-img-y" min="0" max="100" value="50">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="merge-img-apply-btn" style="width:100%; margin-top:0.5rem;">
+                                <i class="fa-solid fa-check"></i> Apply Size Changes
+                            </button>
                         </div>
 
                         <div class="fx-card">
@@ -185,10 +233,57 @@
 
                             <div class="control-group" id="bg-upload-group" style="display:none;">
                                 <label class="btn btn-secondary file-upload-btn w-100">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media File
-                                    <input type="file" id="bg-file-upload" accept="image/*,video/*" hidden>
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media / GIF File
+                                    <input type="file" id="bg-file-upload" accept="image/*,image/gif,video/*" hidden>
                                 </label>
                                 <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
+                            </div>
+
+                            <!-- Image / GIF Size Adjuster (shown after upload) -->
+                            <div id="studio-image-size-panel" style="display:none; margin-top:0.75rem; padding-top:0.75rem; border-top: 1px solid var(--glass-border);">
+                                <div class="fx-title" style="font-size:0.65rem; margin-bottom:0.75rem;"><i class="fa-solid fa-up-right-and-down-left-from-center" style="color:var(--accent);"></i> ADJUST IMAGE SIZE</div>
+                                <div class="control-group">
+                                    <label>Fit Mode</label>
+                                    <select id="studio-img-fit" class="input-field styled-select">
+                                        <option value="cover">Cover (Fill)</option>
+                                        <option value="contain">Contain (Fit)</option>
+                                        <option value="fill">Stretch</option>
+                                        <option value="custom">Custom Size</option>
+                                    </select>
+                                </div>
+                                <div id="studio-img-custom-size" style="display:none;">
+                                    <div class="control-group">
+                                        <div class="flex-spaced">
+                                            <label>Width</label>
+                                            <span id="studio-img-w-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
+                                        </div>
+                                        <input type="range" id="studio-img-width" min="10" max="200" value="100">
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="flex-spaced">
+                                            <label>Height</label>
+                                            <span id="studio-img-h-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
+                                        </div>
+                                        <input type="range" id="studio-img-height" min="10" max="200" value="100">
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="flex-spaced">
+                                            <label>Horizontal Position</label>
+                                            <span id="studio-img-x-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
+                                        </div>
+                                        <input type="range" id="studio-img-x" min="0" max="100" value="50">
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="flex-spaced">
+                                            <label>Vertical Position</label>
+                                            <span id="studio-img-y-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
+                                        </div>
+                                        <input type="range" id="studio-img-y" min="0" max="100" value="50">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="studio-img-size-btn" style="width:100%; margin-top:0.25rem; font-size:0.75rem; padding:0.5rem;">
+                                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Adjust Image Size
+                                </button>
                             </div>
                         </div>
 
