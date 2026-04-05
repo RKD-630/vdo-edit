@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sidebar.classList.toggle('closed');
             } else {
                 sidebar.classList.toggle('open');
+                document.querySelector('.top-workspace').classList.toggle('menu-open', sidebar.classList.contains('open'));
             }
             
             // If opening and nothing is selected, show the first text clip by default
@@ -156,6 +157,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(firstText) selectClip(firstText.id, 'text');
             }
         });
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isLight = false;
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                isLight = !isLight;
+                if (isLight) {
+                    document.body.classList.add('light-theme');
+                    themeIcon.className = 'fa-solid fa-moon';
+                } else {
+                    document.body.classList.remove('light-theme');
+                    themeIcon.className = 'fa-solid fa-sun';
+                }
+            });
+        }
+
         if (newProjectBtn) newProjectBtn.addEventListener('click', () => { if(confirm("Start a new project? Unsaved changes will be lost.")) window.location.reload(); });
         if (videoRatioBtn) videoRatioBtn.addEventListener('change', (e) => { APP.ratio = e.target.value; updateRatioUI(); renderVideoFrame(); });
         
@@ -269,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // On mobile, close the sidebar to jump back to main window
                 if (window.innerWidth <= 900) {
                     sidebar.classList.remove('open');
+                    document.querySelector('.top-workspace').classList.remove('menu-open');
                 }
             });
         });
@@ -359,12 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
             closeSidebarBtn.addEventListener('click', () => {
                 sidebar.classList.remove('open');
                 sidebar.classList.add('closed');
+                document.querySelector('.top-workspace').classList.remove('menu-open');
             });
-            closeSidebarBtn.addEventListener('touchstart', (e) => { 
-                e.preventDefault(); 
-                sidebar.classList.remove('open'); 
-                sidebar.classList.add('closed');
-            }, { passive: false });
         }
 
         // Individual Tab Close Buttons
@@ -374,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sidebar.classList.add('closed');
                 } else {
                     sidebar.classList.remove('open');
+                    document.querySelector('.top-workspace').classList.remove('menu-open');
                 }
             });
         });
@@ -391,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sidebar.classList.remove('closed');
                 } else {
                     sidebar.classList.add('open');
+                    document.querySelector('.top-workspace').classList.add('menu-open');
                 }
                 
                 if (tab === 'designer') {
@@ -402,7 +420,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             btn.addEventListener('click', handleTabClick);
-            btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleTabClick(); }, { passive: false });
         });
 
         // --- Merge Tab Logic ---
