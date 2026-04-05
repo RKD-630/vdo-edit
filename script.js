@@ -49,9 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const newProjectBtn = document.getElementById('new-project-btn');
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    const timelineToggleBtn = document.getElementById('timeline-toggle-btn');
-
+    
     const propEmpty = document.getElementById('prop-empty');
     const propMedia = document.getElementById('prop-media');
     const propText = document.getElementById('prop-text');
@@ -142,6 +140,67 @@ document.addEventListener('DOMContentLoaded', () => {
         updateRatioUI();
         seekTo(0);
         setupEventListeners();
+        setupResizers();
+    }
+
+    function setupResizers() {
+        const resizerX = document.getElementById('resizer-sidebar');
+        const resizerY = document.getElementById('resizer-timeline');
+        
+        let isResizingX = false;
+        let isResizingY = false;
+
+        if (resizerX) {
+            resizerX.addEventListener('mousedown', (e) => {
+                isResizingX = true;
+                resizerX.classList.add('active');
+                document.body.style.cursor = 'col-resize';
+                e.preventDefault();
+            });
+        }
+        
+        if (resizerY) {
+            resizerY.addEventListener('mousedown', (e) => {
+                isResizingY = true;
+                resizerY.classList.add('active');
+                document.body.style.cursor = 'row-resize';
+                e.preventDefault();
+            });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizingX && !isResizingY) return;
+            
+            if (isResizingX) {
+                // Adjust sidebar width
+                const newWidth = (e.clientX / window.innerWidth) * 100;
+                if (newWidth > 15 && newWidth < 80) { // Keep bounds between 15% and 80%
+                    document.documentElement.style.setProperty('--sidebar-width', newWidth + '%');
+                }
+            }
+            
+            if (isResizingY) {
+                // Adjust timeline height
+                const newHeight = window.innerHeight - e.clientY;
+                const minH = 100; // minimum pixels
+                const maxH = window.innerHeight * 0.7; // max 70% of screen
+                if (newHeight > minH && newHeight < maxH) {
+                    document.documentElement.style.setProperty('--timeline-height', newHeight + 'px');
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizingX) {
+                isResizingX = false;
+                if(resizerX) resizerX.classList.remove('active');
+            }
+            if (isResizingY) {
+                isResizingY = false;
+                if(resizerY) resizerY.classList.remove('active');
+            }
+            document.body.style.cursor = '';
+        });
     }
 
     function setupEventListeners() {
@@ -150,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sidebar.classList.toggle('closed');
             } else {
                 sidebar.classList.toggle('open');
+                document.querySelector('.top-workspace').classList.toggle('menu-open', sidebar.classList.contains('open'));
             }
             
             // If opening and nothing is selected, show the first text clip by default
@@ -158,42 +218,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(firstText) selectClip(firstText.id, 'text');
             }
         });
-        if (newProjectBtn) newProjectBtn.addEventListener('click', () => { if(confirm("Start a new project? Unsaved changes will be lost.")) window.location.reload(); });
-        
-        // Theme Toggle
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                const icon = themeToggleBtn.querySelector('i');
-                if (document.body.classList.contains('light-mode')) {
-                    document.body.classList.remove('light-mode');
-                    icon.classList.remove('fa-sun');
-                    icon.classList.add('fa-moon');
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isLight = false;
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                isLight = !isLight;
+                if (isLight) {
+                    document.body.classList.add('light-theme');
+                    themeIcon.className = 'fa-solid fa-moon';
                 } else {
-                    document.body.classList.add('light-mode');
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
-                }
-            });
-        }
-        
-        // Timeline Toggle
-        if (timelineToggleBtn) {
-            timelineToggleBtn.addEventListener('click', () => {
-                const timeline = document.querySelector('.bottom-timeline');
-                const icon = timelineToggleBtn.querySelector('i');
-                if (timeline) {
-                    timeline.classList.toggle('hidden');
-                    if (timeline.classList.contains('hidden')) {
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
-                    } else {
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    }
+                    document.body.classList.remove('light-theme');
+                    themeIcon.className = 'fa-solid fa-sun';
                 }
             });
         }
 
+        if (newProjectBtn) newProjectBtn.addEventListener('click', () => { if(confirm("Start a new project? Unsaved changes will be lost.")) window.location.reload(); });
         if (videoRatioBtn) videoRatioBtn.addEventListener('change', (e) => { APP.ratio = e.target.value; updateRatioUI(); renderVideoFrame(); });
         
         if (tlZoom) tlZoom.addEventListener('input', (e) => { APP.zoom = parseInt(e.target.value); updateRuler(); renderTimelineClips(); updatePlayheadUI(); });
@@ -306,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // On mobile, close the sidebar to jump back to main window
                 if (window.innerWidth <= 900) {
                     sidebar.classList.remove('open');
+                    document.querySelector('.top-workspace').classList.remove('menu-open');
                 }
             });
         });
@@ -396,12 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
             closeSidebarBtn.addEventListener('click', () => {
                 sidebar.classList.remove('open');
                 sidebar.classList.add('closed');
+                document.querySelector('.top-workspace').classList.remove('menu-open');
             });
-            closeSidebarBtn.addEventListener('touchstart', (e) => { 
-                e.preventDefault(); 
-                sidebar.classList.remove('open'); 
-                sidebar.classList.add('closed');
-            }, { passive: false });
         }
 
         // Individual Tab Close Buttons
@@ -411,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sidebar.classList.add('closed');
                 } else {
                     sidebar.classList.remove('open');
+                    document.querySelector('.top-workspace').classList.remove('menu-open');
                 }
             });
         });
@@ -428,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sidebar.classList.remove('closed');
                 } else {
                     sidebar.classList.add('open');
+                    document.querySelector('.top-workspace').classList.add('menu-open');
                 }
                 
                 if (tab === 'designer') {
@@ -439,7 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             btn.addEventListener('click', handleTabClick);
-            btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleTabClick(); }, { passive: false });
         });
 
         // --- Merge Tab Logic ---
@@ -1107,7 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMediaInspectorVisibility() { if(bgColorGroup) bgColorGroup.style.display = bgType.value === 'color' ? 'flex' : 'none'; if(bgGradGroup) bgGradGroup.style.display = bgType.value === 'gradient' ? 'flex' : 'none'; if(bgUploadGroup) bgUploadGroup.style.display = ['image', 'video'].includes(bgType.value) ? 'flex' : 'none'; }
     function updateEffectSettingsVisibility() { 
-        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out', 'unfold-reveal'];
+        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out', 'unfold-reveal', 'fold-reveal', 'typewriter', 'bounce', 'spin', 'drop', 'wave'];
         const hasMotion = motionList.includes(textAnimation.value) || ['fade-scale', 'staggered-slide'].includes(textEffect.value); 
         const effectSettings = document.getElementById('effect-settings');
         if (effectSettings) effectSettings.style.display = hasMotion ? 'block' : 'none'; 
@@ -1173,43 +1214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
     }
     function handleAudioUpload(e) { const file = e.target.files[0]; if(!file) return; const c = getClip(APP.selectedClipId); if(c) { c.fileName = file.name; if(audioFileName) audioFileName.innerText = file.name; c.audioObj = new Audio(URL.createObjectURL(file)); c.audioObj.volume = (c.volume || 100) / 100; } }
-    function makeClipInteractive(el, clip) { 
-        const startDrag = (e) => { 
-            e.preventDefault(); 
-            const startX = (e.touches ? e.touches[0].clientX : e.clientX); 
-            const initStart = clip.start; 
-            const initEnd = clip.end; 
-            const isL = e.target.classList.contains('left'); 
-            const isR = e.target.classList.contains('right'); 
-            const move = (me) => { 
-                const dx = ((me.touches ? me.touches[0].clientX : me.clientX) - startX) / APP.zoom; 
-                if (isL) clip.start = Math.max(0, Math.min(clip.end - 0.5, initStart + dx)); 
-                else if (isR) clip.end = Math.max(clip.start + 0.5, Math.min(APP.duration, initEnd + dx)); 
-                else { 
-                    const dur = initEnd - initStart; 
-                    clip.start = Math.max(0, Math.min(APP.duration - dur, initStart + dx)); 
-                    clip.end = clip.start + dur; 
-                } 
-                el.style.left = `${clip.start * APP.zoom}px`; 
-                el.style.width = `${(clip.end - clip.start) * APP.zoom}px`; 
-                renderVideoFrame(); 
-            }; 
-            const stop = () => { 
-                document.removeEventListener('mousemove', move); 
-                document.removeEventListener('mouseup', stop); 
-                document.removeEventListener('touchmove', move); 
-                document.removeEventListener('touchend', stop); 
-                renderTimelineClips(); 
-            }; 
-            document.addEventListener('mousemove', move); 
-            document.addEventListener('mouseup', stop); 
-            document.addEventListener('touchmove', move, { passive: false }); 
-            document.addEventListener('touchend', stop); 
-            e.stopPropagation(); 
-        };
-        el.addEventListener('mousedown', startDrag);
-        el.addEventListener('touchstart', startDrag, { passive: false });
-    }
+    function makeClipInteractive(el, clip) { el.addEventListener('mousedown', (e) => { e.preventDefault(); const startX = (e.touches ? e.touches[0].clientX : e.clientX); const initStart = clip.start; const initEnd = clip.end; const isL = e.target.classList.contains('left'); const isR = e.target.classList.contains('right'); const move = (me) => { const dx = ((me.touches ? me.touches[0].clientX : me.clientX) - startX) / APP.zoom; if (isL) clip.start = Math.max(0, Math.min(clip.end - 0.5, initStart + dx)); else if (isR) clip.end = Math.max(clip.start + 0.5, Math.min(APP.duration, initEnd + dx)); else { const dur = initEnd - initStart; clip.start = Math.max(0, Math.min(APP.duration - dur, initStart + dx)); clip.end = clip.start + dur; } el.style.left = `${clip.start * APP.zoom}px`; el.style.width = `${(clip.end - clip.start) * APP.zoom}px`; renderVideoFrame(); }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); renderTimelineClips(); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); e.stopPropagation(); }); }
     function renderTimelineClips() { Object.keys(trackContents).forEach(track => { trackContents[track].innerHTML = ''; APP.tracks[track].forEach(clip => { const el = document.createElement('div'); el.className = `clip-node ${APP.selectedClipId === clip.id ? 'selected' : ''}`; el.style.left = `${clip.start * APP.zoom}px`; el.style.width = `${(clip.end - clip.start) * APP.zoom}px`; el.innerHTML = `<div class="clip-handle left"></div><span class="clip-innerText">${clip.text ? clip.text.split('\n')[0] : (clip.bgType || 'Clip')}</span><div class="clip-handle right"></div>`; el.addEventListener('click', () => selectClip(clip.id, track)); el.setAttribute('data-id', clip.id); makeClipInteractive(el, clip); trackContents[track].appendChild(el); }); }); }
 
     function renderVideoFrame() {
@@ -1272,16 +1277,26 @@ document.addEventListener('DOMContentLoaded', () => {
             frameBg.appendChild(el); 
         });
         APP.tracks.text.filter(c => time >= c.start && time <= c.end).forEach(t => { 
-            const el = document.createElement('div'); el.className = 'frame-obj-text'; el.innerHTML = t.text; 
             const dt = time - t.start; const spd = t.speed || 5;
-            let tx = t.x, ty = t.y; 
             const anim = t.animation || t.effect; // Support legacy clips that used t.effect for motion
+            const el = document.createElement('div'); el.className = 'frame-obj-text'; 
+            
+            let textToDisplay = t.text;
+            if (anim === 'typewriter') {
+                const chars = Math.floor(dt * spd * 10);
+                if (chars < textToDisplay.length) textToDisplay = textToDisplay.substring(0, chars);
+            }
+            el.innerHTML = textToDisplay;
+
+            let tx = t.x, ty = t.y; 
             if (anim === 'scroll-left') tx -= dt * spd * 10; 
             else if (anim === 'scroll-right') tx += dt * spd * 10; 
             else if (anim === 'scroll-up') ty -= dt * spd * 10; 
             else if (anim === 'scroll-down') ty += dt * spd * 10; 
             else if (anim === 'marquee-left') tx = 110 - (dt * spd * 20); 
             else if (anim === 'marquee-right') tx = -10 + (dt * spd * 20);
+            else if (anim === 'drop') ty = (dt < 1) ? ty - (1 - dt)*50 : ty;
+            else if (anim === 'wave') ty += Math.sin(dt * spd) * 10;
 
             // Apply Visual Style Effects
             let styleCss = `left: ${tx}%; top: ${ty}%; font-family: ${t.font}; font-size: ${t.size}px; color: ${t.color}; background-color: ${t.bgColor}; font-weight: ${t.bold ? 'bold' : 'normal'}; font-style: ${t.italic ? 'italic' : 'normal'}; transform: translate(-50%, -50%); white-space: ${t.wrap !== false ? 'pre-wrap' : 'nowrap'}; width: ${t.wrap !== false ? '80%' : 'auto'};`;
@@ -1296,6 +1311,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (anim === 'unfold-reveal') {
                 const reveal = Math.min(1, dt * spd * 0.2);
                 styleCss += `clip-path: inset(0% 0% ${100 - (reveal * 100)}% 0%); opacity: ${Math.min(1, reveal * 2)};`;
+            } else if (anim === 'fold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                styleCss += `clip-path: inset(0% ${50 - (reveal * 50)}% 0% ${50 - (reveal * 50)}%); opacity: ${Math.min(1, reveal * 2)};`;
+            } else if (anim === 'spin') {
+                const angle = dt * spd * 45;
+                transform += ` rotate(${angle}deg)`;
+            } else if (anim === 'bounce') {
+                const bounceY = Math.abs(Math.sin(dt * spd * 2)) * -20;
+                transform += ` translateY(${bounceY}px)`;
             }
 
             styleCss += `transform: ${transform};`;
@@ -1317,34 +1341,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function makeTextDraggable(el, clip) { 
-        const startDrag = (e) => { 
-            const anim = clip.animation || clip.effect;
-            if(anim && (anim.includes('scroll') || anim.includes('marquee'))) return; 
-            e.preventDefault(); 
-            const sX = (e.touches ? e.touches[0].clientX : e.clientX), sY = (e.touches ? e.touches[0].clientY : e.clientY); 
-            const iX = clip.x, iY = clip.y; 
-            const mv = (me) => { 
-                const rect = frameObjects.getBoundingClientRect(); 
-                clip.x = iX + (((me.touches ? me.touches[0].clientX : me.clientX) - sX) / rect.width) * 100; 
-                clip.y = iY + (((me.touches ? me.touches[0].clientY : me.clientY) - sY) / rect.height) * 100; 
-                el.style.left = `${clip.x}%`; el.style.top = `${clip.y}%`; 
-            }; 
-            const st = () => { 
-                document.removeEventListener('mousemove', mv); 
-                document.removeEventListener('mouseup', st); 
-                document.removeEventListener('touchmove', mv);
-                document.removeEventListener('touchend', st);
-            }; 
-            document.addEventListener('mousemove', mv); 
-            document.addEventListener('mouseup', st); 
-            document.addEventListener('touchmove', mv, { passive: false });
-            document.addEventListener('touchend', st);
-            e.stopPropagation(); 
-        };
-        el.addEventListener('mousedown', startDrag);
-        el.addEventListener('touchstart', startDrag, { passive: false });
-    }
+    function makeTextDraggable(el, clip) { el.addEventListener('mousedown', (e) => { 
+        const anim = clip.animation || clip.effect;
+        if(anim && (anim.includes('scroll') || anim.includes('marquee'))) return; 
+        e.preventDefault(); const sX = (e.touches ? e.touches[0].clientX : e.clientX), sY = (e.touches ? e.touches[0].clientY : e.clientY); const iX = clip.x, iY = clip.y; const mv = (me) => { const rect = frameObjects.getBoundingClientRect(); clip.x = iX + (((me.touches ? me.touches[0].clientX : me.clientX) - sX) / rect.width) * 100; clip.y = iY + (((me.touches ? me.touches[0].clientY : me.clientY) - sY) / rect.height) * 100; el.style.left = `${clip.x}%`; el.style.top = `${clip.y}%`; }; const st = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', st); }; document.addEventListener('mousemove', mv); document.addEventListener('mouseup', st); e.stopPropagation(); }); }
     function syncAudioPlay() { APP.tracks.audio.forEach(a => { if(a.audioObj && APP.time >= a.start && APP.time < a.end) { a.audioObj.currentTime = APP.time - a.start; a.audioObj.play().catch(()=>{}); } }); }
     function syncAudioPause() { APP.tracks.audio.forEach(a => a.audioObj?.pause()); }
     function syncAudioTime() { APP.tracks.audio.forEach(a => { if(a.audioObj) { if(APP.time >= a.start && APP.time < a.end) { if(a.audioObj.paused) a.audioObj.play().catch(()=>{}); const t = APP.time - a.start; if(Math.abs(a.audioObj.currentTime - t) > 0.1) a.audioObj.currentTime = t; } else a.audioObj.pause(); } }); }
@@ -1360,6 +1360,8 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (anim === 'scroll-down') typ += dt * spd * 10; 
             else if (anim === 'marquee-left') txp = 110 - (dt * spd * 20); 
             else if (anim === 'marquee-right') txp = -10 + (dt * spd * 20);
+            else if (anim === 'drop') typ = (dt < 1) ? typ - (1 - dt)*50 : typ;
+            else if (anim === 'wave') typ += Math.sin(dt * spd) * 10;
             const tx = (txp / 100) * canvas.width, ty = (typ / 100) * canvas.height;
             const fS = (t.size / 480) * canvas.height;
             ctx.font = `${t.bold ? 'bold' : ''} ${t.italic ? 'italic' : ''} ${fS}px ${t.font.split(',')[0].replace(/'/g,'')}`;
@@ -1383,6 +1385,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.rect(0, 0, canvas.width, ty + (reveal * canvas.height * 0.5)); // Simple reveal rect
                 ctx.clip();
                 ctx.globalAlpha = Math.min(1, reveal * 2);
+            } else if (anim === 'fold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                const rectW = canvas.width * reveal;
+                ctx.beginPath();
+                ctx.rect((canvas.width - rectW)/2, 0, rectW, canvas.height);
+                ctx.clip();
+                ctx.globalAlpha = Math.min(1, reveal * 2);
+            } else if (anim === 'spin') {
+                const angle = (dt * spd * 45) * Math.PI / 180;
+                ctx.translate(tx, ty);
+                ctx.rotate(angle);
+                ctx.translate(-tx, -ty);
+            } else if (anim === 'bounce') {
+                const bounceY = Math.abs(Math.sin(dt * spd * 2)) * -20;
+                ctx.translate(0, bounceY * (canvas.height/500));
             }
 
             const intens = t.intensity || 10;
@@ -1406,9 +1423,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = t.color;
             
             let linesToDraw = [];
+            let textForExport = t.text;
+            if (anim === 'typewriter') {
+                const chars = Math.floor(dt * spd * 10);
+                if (chars < textForExport.length) textForExport = textForExport.substring(0, chars);
+            }
             if (t.wrap !== false) {
-                const words = t.text.split(' ');
-                let currentLine = words[0];
+                const words = textForExport.split(' ');
+                let currentLine = words[0] || '';
                 for (let i = 1; i < words.length; i++) {
                     const word = words[i];
                     const width = ctx.measureText(currentLine + " " + word).width;
