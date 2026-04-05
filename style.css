@@ -155,20 +155,34 @@ h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
 
 @media (max-width: 900px) {
     .top-workspace { flex-direction: column; }
-    .sidebar { 
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; 
-        background: var(--bg-primary); transform: translateY(100%); z-index: 1001; 
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-top: 1px solid var(--glass-border);
-        border-right: none;
+    
+    .preview-area { 
+        flex: 1 1 auto; 
+        transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        min-height: 0;
     }
-    .sidebar.open { transform: translateY(0); }
+    
+    .sidebar { 
+        position: relative; top: auto; bottom: auto; left: auto; transform: none;
+        width: 100%; 
+        flex: 0 0 0%; 
+        height: 0;
+        background: var(--bg-primary); 
+        transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: none;
+        overflow: hidden;
+    }
+    
+    .sidebar.open { 
+        flex: 0 0 55%; 
+        height: 55%;
+        border-top: 1px solid var(--glass-border);
+        overflow-y: auto;
+    }
+    
     .sidebar-toggle { display: flex !important; z-index: 1100 !important; cursor: pointer !important; position: relative; pointer-events: auto !important; }
     
     .header-settings { gap: 0.75rem; padding: 0.3rem 0.6rem; }
-    
-    .preview-area { transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; }
-    .top-workspace.menu-open .preview-area { height: 50%; flex: none; }
 }
 
 .btn {
@@ -683,7 +697,8 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     position: relative;
     overflow: hidden;
     height: 100%;
-    /* aspect-ratio set dynamically */
+    max-width: 100%; /* Safety to prevent horizontal squeeze overflow */
+    max-height: 100%;
 }
 
 .frame-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;}
