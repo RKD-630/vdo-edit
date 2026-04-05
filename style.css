@@ -13,7 +13,7 @@
     --clip-text: #f59e0b;
     --clip-audio: #a855f7;
     --sidebar-width: 40%;
-    --timeline-height: 35vh;
+    --timeline-height: 15vh;
 }
 
 * {
@@ -31,6 +31,15 @@ body {
     height: 100vh;
 }
 
+@media (max-width: 900px) and (orientation: landscape) {
+    :root {
+        --timeline-height: 25vh;
+    }
+    .top-workspace { flex-direction: row; }
+    .sidebar { width: 60%; }
+    .preview-area { min-height: 50vh; }
+}
+
 .app-background {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
@@ -42,7 +51,7 @@ body {
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 120vh;
+    height: 100vh;
     padding: 0;
     overflow: hidden;
 }
@@ -60,7 +69,7 @@ body {
 .flex-row { display: flex; gap: 0.5rem; align-items: center; }
 .flex-spaced { display: flex; justify-content: space-between; gap: 0.5rem; align-items: center; }
 
-h1 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;}
+h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;}
 
 /* New Property Panel Header */
 .prop-header {
@@ -68,7 +77,7 @@ h1 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    border-bottom: 11px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
     padding-bottom: 0.5rem;
 }
 
@@ -147,7 +156,7 @@ h1 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
 @media (max-width: 900px) {
     .top-workspace { flex-direction: column; }
     .sidebar { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        position: fixed; top: 64px; left: 0; width: 100%; height: calc(100% - 64px); 
         background: var(--bg-primary); transform: translateX(-100%); z-index: 1001; 
     }
     .sidebar.open { transform: translateX(0); }
@@ -653,7 +662,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     padding: 0.75rem 1.25rem; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--glass-border);
     z-index: 10;
 }
-.status-indicator { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 0.5rem; color: var(--text-muted); }
+.status-indicator { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
 .dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
@@ -667,7 +676,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
     box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
     position: relative;
     overflow: hidden;
-    height: 160%;
+    height: 100%;
     /* aspect-ratio set dynamically */
 }
 
@@ -740,7 +749,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent); height: 4px; border-
 }
 
 .ruler-container {
-    height: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.5);
+    height: 30px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.5);
     position: relative;
 }
 .playhead {

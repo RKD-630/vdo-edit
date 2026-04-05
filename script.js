@@ -1070,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMediaInspectorVisibility() { if(bgColorGroup) bgColorGroup.style.display = bgType.value === 'color' ? 'flex' : 'none'; if(bgGradGroup) bgGradGroup.style.display = bgType.value === 'gradient' ? 'flex' : 'none'; if(bgUploadGroup) bgUploadGroup.style.display = ['image', 'video'].includes(bgType.value) ? 'flex' : 'none'; }
     function updateEffectSettingsVisibility() { 
-        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out', 'unfold-reveal'];
+        const motionList = ['scroll-left', 'scroll-right', 'scroll-up', 'scroll-down', 'marquee-left', 'marquee-right', 'zoom-in', 'zoom-out', 'unfold-reveal', 'fold-reveal', 'typewriter', 'bounce', 'spin', 'drop', 'wave'];
         const hasMotion = motionList.includes(textAnimation.value) || ['fade-scale', 'staggered-slide'].includes(textEffect.value); 
         const effectSettings = document.getElementById('effect-settings');
         if (effectSettings) effectSettings.style.display = hasMotion ? 'block' : 'none'; 
@@ -1199,16 +1199,26 @@ document.addEventListener('DOMContentLoaded', () => {
             frameBg.appendChild(el); 
         });
         APP.tracks.text.filter(c => time >= c.start && time <= c.end).forEach(t => { 
-            const el = document.createElement('div'); el.className = 'frame-obj-text'; el.innerHTML = t.text; 
             const dt = time - t.start; const spd = t.speed || 5;
-            let tx = t.x, ty = t.y; 
             const anim = t.animation || t.effect; // Support legacy clips that used t.effect for motion
+            const el = document.createElement('div'); el.className = 'frame-obj-text'; 
+            
+            let textToDisplay = t.text;
+            if (anim === 'typewriter') {
+                const chars = Math.floor(dt * spd * 10);
+                if (chars < textToDisplay.length) textToDisplay = textToDisplay.substring(0, chars);
+            }
+            el.innerHTML = textToDisplay;
+
+            let tx = t.x, ty = t.y; 
             if (anim === 'scroll-left') tx -= dt * spd * 10; 
             else if (anim === 'scroll-right') tx += dt * spd * 10; 
             else if (anim === 'scroll-up') ty -= dt * spd * 10; 
             else if (anim === 'scroll-down') ty += dt * spd * 10; 
             else if (anim === 'marquee-left') tx = 110 - (dt * spd * 20); 
             else if (anim === 'marquee-right') tx = -10 + (dt * spd * 20);
+            else if (anim === 'drop') ty = (dt < 1) ? ty - (1 - dt)*50 : ty;
+            else if (anim === 'wave') ty += Math.sin(dt * spd) * 10;
 
             // Apply Visual Style Effects
             let styleCss = `left: ${tx}%; top: ${ty}%; font-family: ${t.font}; font-size: ${t.size}px; color: ${t.color}; background-color: ${t.bgColor}; font-weight: ${t.bold ? 'bold' : 'normal'}; font-style: ${t.italic ? 'italic' : 'normal'}; transform: translate(-50%, -50%); white-space: ${t.wrap !== false ? 'pre-wrap' : 'nowrap'}; width: ${t.wrap !== false ? '80%' : 'auto'};`;
@@ -1223,6 +1233,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (anim === 'unfold-reveal') {
                 const reveal = Math.min(1, dt * spd * 0.2);
                 styleCss += `clip-path: inset(0% 0% ${100 - (reveal * 100)}% 0%); opacity: ${Math.min(1, reveal * 2)};`;
+            } else if (anim === 'fold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                styleCss += `clip-path: inset(0% ${50 - (reveal * 50)}% 0% ${50 - (reveal * 50)}%); opacity: ${Math.min(1, reveal * 2)};`;
+            } else if (anim === 'spin') {
+                const angle = dt * spd * 45;
+                transform += ` rotate(${angle}deg)`;
+            } else if (anim === 'bounce') {
+                const bounceY = Math.abs(Math.sin(dt * spd * 2)) * -20;
+                transform += ` translateY(${bounceY}px)`;
             }
 
             styleCss += `transform: ${transform};`;
@@ -1263,6 +1282,8 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (anim === 'scroll-down') typ += dt * spd * 10; 
             else if (anim === 'marquee-left') txp = 110 - (dt * spd * 20); 
             else if (anim === 'marquee-right') txp = -10 + (dt * spd * 20);
+            else if (anim === 'drop') typ = (dt < 1) ? typ - (1 - dt)*50 : typ;
+            else if (anim === 'wave') typ += Math.sin(dt * spd) * 10;
             const tx = (txp / 100) * canvas.width, ty = (typ / 100) * canvas.height;
             const fS = (t.size / 480) * canvas.height;
             ctx.font = `${t.bold ? 'bold' : ''} ${t.italic ? 'italic' : ''} ${fS}px ${t.font.split(',')[0].replace(/'/g,'')}`;
@@ -1286,6 +1307,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.rect(0, 0, canvas.width, ty + (reveal * canvas.height * 0.5)); // Simple reveal rect
                 ctx.clip();
                 ctx.globalAlpha = Math.min(1, reveal * 2);
+            } else if (anim === 'fold-reveal') {
+                const reveal = Math.min(1, dt * spd * 0.2);
+                const rectW = canvas.width * reveal;
+                ctx.beginPath();
+                ctx.rect((canvas.width - rectW)/2, 0, rectW, canvas.height);
+                ctx.clip();
+                ctx.globalAlpha = Math.min(1, reveal * 2);
+            } else if (anim === 'spin') {
+                const angle = (dt * spd * 45) * Math.PI / 180;
+                ctx.translate(tx, ty);
+                ctx.rotate(angle);
+                ctx.translate(-tx, -ty);
+            } else if (anim === 'bounce') {
+                const bounceY = Math.abs(Math.sin(dt * spd * 2)) * -20;
+                ctx.translate(0, bounceY * (canvas.height/500));
             }
 
             const intens = t.intensity || 10;
@@ -1309,9 +1345,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = t.color;
             
             let linesToDraw = [];
+            let textForExport = t.text;
+            if (anim === 'typewriter') {
+                const chars = Math.floor(dt * spd * 10);
+                if (chars < textForExport.length) textForExport = textForExport.substring(0, chars);
+            }
             if (t.wrap !== false) {
-                const words = t.text.split(' ');
-                let currentLine = words[0];
+                const words = textForExport.split(' ');
+                let currentLine = words[0] || '';
                 for (let i = 1; i < words.length; i++) {
                     const word = words[i];
                     const width = ctx.measureText(currentLine + " " + word).width;
