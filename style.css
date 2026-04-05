@@ -56,6 +56,26 @@ body {
     overflow: hidden;
 }
 
+/* Resizers */
+.layout-resizer {
+    background-color: var(--glass-border);
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 100;
+}
+.layout-resizer:hover, .layout-resizer.active {
+    background-color: var(--accent);
+}
+.resizer-x {
+    width: 6px;
+    cursor: col-resize;
+    flex-shrink: 0;
+}
+.resizer-y {
+    height: 6px;
+    cursor: row-resize;
+    flex-shrink: 0;
+}
+
 /* Glassmorphism Panel Utility */
 .glass-panel {
     background: var(--glass-bg);
@@ -144,6 +164,9 @@ h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
     padding: 0;
     border: none;
 }
+.app-container.designer-mode .resizer-y {
+    display: none;
+}
 
 .bottom-timeline, .header-settings, .header-actions {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -155,6 +178,8 @@ h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; disp
 
 @media (max-width: 900px) {
     .top-workspace { flex-direction: column; }
+    
+    .layout-resizer.resizer-x { display: none; }
     
     .preview-area { 
         flex: 1 1 auto; 

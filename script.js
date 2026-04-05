@@ -140,6 +140,67 @@ document.addEventListener('DOMContentLoaded', () => {
         updateRatioUI();
         seekTo(0);
         setupEventListeners();
+        setupResizers();
+    }
+
+    function setupResizers() {
+        const resizerX = document.getElementById('resizer-sidebar');
+        const resizerY = document.getElementById('resizer-timeline');
+        
+        let isResizingX = false;
+        let isResizingY = false;
+
+        if (resizerX) {
+            resizerX.addEventListener('mousedown', (e) => {
+                isResizingX = true;
+                resizerX.classList.add('active');
+                document.body.style.cursor = 'col-resize';
+                e.preventDefault();
+            });
+        }
+        
+        if (resizerY) {
+            resizerY.addEventListener('mousedown', (e) => {
+                isResizingY = true;
+                resizerY.classList.add('active');
+                document.body.style.cursor = 'row-resize';
+                e.preventDefault();
+            });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizingX && !isResizingY) return;
+            
+            if (isResizingX) {
+                // Adjust sidebar width
+                const newWidth = (e.clientX / window.innerWidth) * 100;
+                if (newWidth > 15 && newWidth < 80) { // Keep bounds between 15% and 80%
+                    document.documentElement.style.setProperty('--sidebar-width', newWidth + '%');
+                }
+            }
+            
+            if (isResizingY) {
+                // Adjust timeline height
+                const newHeight = window.innerHeight - e.clientY;
+                const minH = 100; // minimum pixels
+                const maxH = window.innerHeight * 0.7; // max 70% of screen
+                if (newHeight > minH && newHeight < maxH) {
+                    document.documentElement.style.setProperty('--timeline-height', newHeight + 'px');
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizingX) {
+                isResizingX = false;
+                if(resizerX) resizerX.classList.remove('active');
+            }
+            if (isResizingY) {
+                isResizingY = false;
+                if(resizerY) resizerY.classList.remove('active');
+            }
+            document.body.style.cursor = '';
+        });
     }
 
     function setupEventListeners() {

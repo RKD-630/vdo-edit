@@ -604,9 +604,11 @@
 
                 <!-- Sidebar Footer Actions Removed based on request -->
             </aside>
+            
+            <div class="layout-resizer resizer-x" id="resizer-sidebar" title="Drag to resize sideways"></div>
 
             <!-- Center/Right: Video Preview Panel -->
-            <main class="preview-area">
+            <main class="preview-area" id="preview-area">
                 <div class="preview-header">
                     <div class="status-indicator"><span class="dot active"></span> LIVE PREVIEW</div>
                     <div class="tl-time-counter" id="player-time-display">00:00.0</div>
@@ -623,8 +625,10 @@
             </main>
         </div>
 
+        <div class="layout-resizer resizer-y" id="resizer-timeline" title="Drag to resize timeline height"></div>
+
         <!-- BOTTOM TIMELINE -->
-        <div class="bottom-timeline">
+        <div class="bottom-timeline" id="bottom-timeline">
             <div class="timeline-header">
                 <div class="tl-tools left">
                     <button class="icon-btn" id="tl-play"><i class="fa-solid fa-play"></i></button>
