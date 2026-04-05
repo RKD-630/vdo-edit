@@ -12,8 +12,8 @@
     --clip-media: #3b82f6;
     --clip-text: #f59e0b;
     --clip-audio: #a855f7;
-    --sidebar-width: 40%;
-    --timeline-height: 15vh;
+    --sidebar-width: 70%;
+    --timeline-height: 35vh;
 }
 
 body.light-mode {
