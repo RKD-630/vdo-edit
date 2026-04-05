@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>T2V Cinematic Studio Pro</title>
     <!-- Fonts -->
     <!-- Fonts -->
@@ -22,10 +22,7 @@
         <header class="app-header">
         <div class="header-left">
             <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-            <button class="header-btn" id="theme-toggle" title="Toggle Theme" style="padding: 0; margin-left: 0.5rem; color: var(--accent);">
-                <i class="fa-solid fa-sun" id="theme-icon"></i>
-            </button>
-          <div class="logo" style="margin-left: 0.5rem;">T2V <h3><span>PRO</span></div></h3>
+          <div class="logo">T2V <h6><span>STUDIO PRO</h6></span></div>
         </div>
         
         <div class="header-settings">
@@ -44,20 +41,26 @@
             </div>
             <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
                 <i class="fa-solid fa-file-export"></i>
-                <select id="export-format" class="header-select" title="Export Format">
+                <select id="export-format" class="header-select" title="Export Format"><h6>
                     <option value="webm">WebM</option>
                     <option value="mp4">MP4</option>
-                    <option value="gif">GIF</option>
+                  <option value="gif">GIF</option></h6>
                 </select>
             </div>
         </div>
 
         <div class="header-actions">
+            <button class="header-btn secondary" id="theme-toggle-btn" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i> <span></span>
+            </button>
+            <button class="header-btn secondary" id="timeline-toggle-btn" title="Toggle Timeline">
+                <i class="fa-solid fa-eye"></i> <span></span>
+            </button>
             <button class="header-btn secondary" id="new-project-btn" title="New Project">
-                <i class="fa-solid fa-rotate-right"></i> <span>NEW</span>
+                <i class="fa-solid fa-rotate-right"></i> <span></span>
             </button>
             <button class="btn btn-accent" id="finish-and-save-btn" style="width: auto; padding: 0.6rem 1rem; border-radius: 10px;">
-                <i class="fa-solid fa-cloud-arrow-down"></i> <span>FINISH</span>
+                <i class="fa-solid fa-cloud-arrow-down"></i> <span></span>
             </button>
         </div>
     </header>
@@ -65,9 +68,7 @@
         <div class="top-workspace">
             <!-- Left Sidebar: Inspector / Properties -->
             <aside class="sidebar glass-panel" id="sidebar">
-                <header class="sidebar-header">
-                    
-                </header>
+                
                 
                 <div class="sidebar-tabs">
                 <div class="tabs-group">
@@ -84,14 +85,14 @@
                     <div class="designer-panel">
                         <header class="sidebar-header" style="padding: 0 0 1rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
-                                <h2><i class="fa-solid fa-film" style="color: var(--accent);"></i> Clip Merger</h2>
-                                <p>Import and combine multiple assets</p>
+                                <h6><i class="fa-solid fa-film" style="color: var(--accent);"></i> Clip Merger</h2>
+                                
                             </div>
                             <button class="close-tab-btn" title="Close Menu"><i class="fa-solid fa-xmark"></i></button>
                         </header>
 
                         <div class="fx-card glass-morph">
-                            <div class="fx-title">Import Assets</div>
+                            <div class="fx-title">Assets</div>
                             <div class="import-grid">
                                 <label class="import-card" title="Import Video Clip">
                                     <i class="fa-solid fa-video"></i>
@@ -105,7 +106,7 @@
                                 </label>
                                 <label class="import-card" title="Import Image / GIF Layer">
                                     <i class="fa-solid fa-image"></i>
-                                    <span>IMAGE / GIF</span>
+                                    <span>IMAGE</span>
                                     <input type="file" id="merge-image-upload" accept="image/*,image/gif" hidden>
                                 </label>
                             </div>
@@ -113,7 +114,7 @@
 
                         <!-- Merge Image Size Adjuster (shown only after image/GIF import) -->
                         <div class="fx-card" id="merge-image-size-panel" style="display:none;">
-                            <div class="fx-title"><i class="fa-solid fa-expand-arrows-alt" style="color:var(--accent);"></i> Adjust Image Size</div>
+                            <div class="fx-title"><i class="fa-solid fa-expand-arrows-alt" style="color:var(--accent);"></i> Image Size</div>
                             <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Resize and position the imported image/GIF on the timeline scene.</p>
                             <div class="control-group">
                                 <label>Fit Mode</label>
@@ -155,7 +156,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-primary" id="merge-img-apply-btn" style="width:100%; margin-top:0.5rem;">
-                                <i class="fa-solid fa-check"></i>  Size 
+                                <i class="fa-solid fa-check"></i> Apply 
                             </button>
                         </div>
 
@@ -170,16 +171,15 @@
                         </div>
                         
                         <button class="btn btn-accent" id="merge-export-btn" style="margin-top: 1rem; width: 100%;">
-                            <i class="fa-solid fa-file-video"></i> EXPORT HD MP4
-                        </button>
+                            <i class="fa-solid fa-file-video"></i> Download</button>
                     </div>
                 </div>
 
                 <div id="tab-editor" class="tab-content active">
                     <header class="sidebar-header" style="padding: 1.25rem 1.5rem 0.5rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
-                            <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> Studio</h2>
-                            <p>Adjust your creative elements</p>
+                            <h6><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> Studio</h6>
+                            
                         </div>
                         <button class="close-tab-btn" title="Close Menu"><i class="fa-solid fa-xmark"></i></button>
                     </header>
@@ -396,14 +396,8 @@
                                         <option value="zoom-in">Zoom In</option>
                                         <option value="zoom-out">Zoom Out</option>
                                         <option value="unfold-reveal">Unfold Reveal</option>
-                                        <option value="fold-reveal">Fold Reveal</option>
                                         <option value="marquee-left">Marquee Left</option>
                                         <option value="marquee-right">Marquee Right</option>
-                                        <option value="typewriter">Typewriter</option>
-                                        <option value="bounce">Bounce</option>
-                                        <option value="spin">Spin</option>
-                                        <option value="drop">Drop Fade</option>
-                                        <option value="wave">Wave Hover</option>
                                     </select>
                                 </div>
 
@@ -446,8 +440,8 @@
                     <div class="designer-panel">
                         <header class="sidebar-header" style="padding: 0 0 1rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
-                                <h2><i class="fa-solid fa-palette" style="color: var(--accent);"></i> Creative Designer</h2>
-                                <p>Craft stunning visual templates</p>
+                                <h6><i class="fa-solid fa-palette" style="color: var(--accent);"></i> Creative Designer</h6>
+                                
                             </div>
                             <button class="close-tab-btn" title="Close Menu"><i class="fa-solid fa-xmark"></i></button>
                         </header>
@@ -603,11 +597,9 @@
 
                 <!-- Sidebar Footer Actions Removed based on request -->
             </aside>
-            
-            <div class="layout-resizer resizer-x" id="resizer-sidebar" title="Drag to resize sideways"></div>
 
             <!-- Center/Right: Video Preview Panel -->
-            <main class="preview-area" id="preview-area">
+            <main class="preview-area">
                 <div class="preview-header">
                     <div class="status-indicator"><span class="dot active"></span> LIVE PREVIEW</div>
                     <div class="tl-time-counter" id="player-time-display">00:00.0</div>
@@ -624,24 +616,22 @@
             </main>
         </div>
 
-        <div class="layout-resizer resizer-y" id="resizer-timeline" title="Drag to resize timeline height"></div>
-
         <!-- BOTTOM TIMELINE -->
-        <div class="bottom-timeline" id="bottom-timeline">
+        <div class="bottom-timeline">
             <div class="timeline-header">
                 <div class="tl-tools left">
                     <button class="icon-btn" id="tl-play"><i class="fa-solid fa-play"></i></button>
                     <span id="tl-time-counter" style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent);">00:00 / 00:20</span>
                 </div>
                 <div class="tl-tools center">
-                    <button class="btn btn-primary tl-add-btn" id="add-media-clip-btn" title="Add Scene"><i class="fa-solid fa-image"></i> <span></span></button>
-                    <button class="btn btn-primary tl-add-btn" id="add-text-clip-btn" title="Add Text"><i class="fa-solid fa-font"></i> <span></span></button>
-                    <button class="btn btn-primary tl-add-btn" id="add-audio-clip-btn" title="Add Audio"><i class="fa-solid fa-music"></i> <span></span></button>
+                    <button class="btn btn-primary tl-add-btn" id="add-media-clip-btn" title="Add Scene"><i class="fa-solid fa-image"></i> <span>Scene</span></button>
+                    <button class="btn btn-primary tl-add-btn" id="add-text-clip-btn" title="Add Text"><i class="fa-solid fa-font"></i> <span>Text</span></button>
+                    <button class="btn btn-primary tl-add-btn" id="add-audio-clip-btn" title="Add Audio"><i class="fa-solid fa-music"></i> <span>Audio</span></button>
                     <button class="btn btn-secondary tl-add-btn" id="tl-split-btn" title="Split Selected Clip" style="color: var(--accent); border-color: var(--accent);">
-                        <i class="fa-solid fa-scissors"></i> <span></span>
+                        <i class="fa-solid fa-scissors"></i> <span>Split</span>
                     </button>
                     <button class="btn btn-secondary tl-add-btn" id="tl-delete-btn" style="border-color: #ef4444; color: #ef4444; display: none;" title="Delete Selected Clip">
-                        <i class="fa-solid fa-trash-can"></i> <span></span>
+                        <i class="fa-solid fa-trash-can"></i> <span>Delete</span>
                     </button>
                 </div>
                 <div class="tl-tools right">
@@ -653,9 +643,9 @@
 
             <div class="timeline-body">
                 <div class="track-labels">
-                    <div class="t-label"></div>
-                    <div class="t-label"></div>
-                    <div class="t-label"></div>
+                    <div class="t-label">SCENES</div>
+                    <div class="t-label">TEXT</div>
+                    <div class="t-label">AUDIO</div>
                 </div>
                 
                 <div class="tracks-viewport" id="tracks-viewport">
