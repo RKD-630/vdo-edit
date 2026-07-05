@@ -1,690 +1,252 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>T2V Cinematic Studio Pro</title>
-    <!-- Fonts -->
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&family=Poppins:wght@400;600;800&family=Pacifico&family=Bebas+Neue&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Lora:ital,wght@0,400;1,700&family=Great+Vibes&family=Lobster&family=Anton&family=Cinzel:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    <!-- GIF.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
-</head>
-<body>
-    <div id="app-background" class="app-background"></div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0f" />
+<title>Eraser AI — Background Remover</title>
 
-    <div class="app-container">
-        
-        <header class="app-header">
-        <div class="header-left">
-            <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-          <div class="logo">T2V <h6><span>STUDIO PRO</h6></span></div>
-        </div>
-        
-        <div class="header-settings">
-            <div class="setting-item">
-                <i class="fa-solid fa-expand"></i>
-                <select id="video-ratio-btn" class="header-select">
-                    <option value="9:16">9:16</option>
-                    <option value="16:9">16:9</option>
-                    <option value="1:1">1:1</option>
-                </select>
-            </div>
-            <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
-                <i class="fa-solid fa-clock"></i>
-                <input type="number" id="timeline-duration" class="header-select" value="20" min="1" max="300" style="width: 50px; background: transparent; border: none; font-family: monospace;">
-                <span style="font-size: 0.7rem; color: var(--text-muted); margin-left: -0.5rem;">s</span>
-            </div>
-            <div class="setting-item" style="border-left: 1px solid var(--glass-border); padding-left: 1.25rem;">
-                <i class="fa-solid fa-file-export"></i>
-                <select id="export-format" class="header-select" title="Export Format"><h6>
-                    <option value="webm">WebM</option>
-                    <option value="mp4">MP4</option>
-                  <option value="gif">GIF</option></h6>
-                </select>
-            </div>
-        </div>
+<link rel="stylesheet" href="style.css" /></head>
+<body data-theme="dark">
 
-        <div class="header-actions">
-            <button class="header-btn secondary" id="theme-toggle-btn" title="Toggle Theme">
-                <i class="fa-solid fa-moon"></i> <span></span>
-            </button>
-            <button class="header-btn secondary" id="timeline-toggle-btn" title="Toggle Timeline">
-                <i class="fa-solid fa-eye"></i> <span></span>
-            </button>
-            <button class="header-btn secondary" id="new-project-btn" title="New Project">
-                <i class="fa-solid fa-rotate-right"></i> <span></span>
-            </button>
-            <button class="btn btn-accent" id="finish-and-save-btn" style="width: auto; padding: 0.6rem 1rem; border-radius: 10px;">
-                <i class="fa-solid fa-cloud-arrow-down"></i> <span></span>
-            </button>
-        </div>
-    </header>
-     <!-- TOP WORKSPACE -->
-        <div class="top-workspace">
-            <!-- Left Sidebar: Inspector / Properties -->
-            <aside class="sidebar glass-panel" id="sidebar">
-                
-                
-                <div class="sidebar-tabs">
-                <div class="tabs-group">
-                    <button class="tab-btn active" data-tab="editor"><i class="fa-solid fa-clapperboard"></i> </button>
-                    <button class="tab-btn" data-tab="merge"><i class="fa-solid fa-film"></i> </button>
-                    <button class="tab-btn" data-tab="designer"><i class="fa-solid fa-palette"></i> </button>
-                </div>
-                <button id="close-sidebar-btn" class="close-sidebar-btn" title="Hide Sidebar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
+<div id="app">
+  <!-- HOME -->
+  <section class="home" id="homeScreen">
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/></svg></div>
+      <div class="logo-text">Eraser<span>AI</span></div>
+    </div>
+    <p class="tagline">Remove backgrounds, apply filters, add frames — all in one place.</p>
+    <div class="home-grid">
+      <button class="home-btn primary" id="btnImport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Import Image</button>
+      <button class="home-btn" id="btnCamera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Camera</button>
+      <button class="home-btn" id="btnRecent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Recent</button>
+      <button class="home-btn" id="btnNewProject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>New Project</button>
+    </div>
+    <div class="recent-list" id="recentList"></div>
+    <div class="home-footer">
+      <button id="btnTheme">🌓 Theme</button>
+      <button id="btnAbout">ℹ️ About</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp,image/bmp,image/tiff,image/gif,image/avif,image/heic,image/svg+xml" hidden="" />
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden="" />
+  </section>
 
-                <div id="tab-merge" class="tab-content">
-                    <div class="designer-panel">
-                        <header class="sidebar-header" style="padding: 0 0 1rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <h6><i class="fa-solid fa-film" style="color: var(--accent);"></i> Clip Merger</h2>
-                                
-                            </div>
-                            
-                        </header>
-
-                        <div class="fx-card glass-morph">
-                            <div class="fx-title">Assets</div>
-                            <div class="import-grid">
-                                <label class="import-card" title="Import Video Clip">
-                                    <i class="fa-solid fa-video"></i>
-                                    <span>VIDEO</span>
-                                    <input type="file" id="merge-video-upload" accept="video/*" hidden>
-                                </label>
-                                <label class="import-card" title="Import Audio Track">
-                                    <i class="fa-solid fa-music"></i>
-                                    <span>AUDIO</span>
-                                    <input type="file" id="merge-audio-upload" accept="audio/*" hidden>
-                                </label>
-                                <label class="import-card" title="Import Image / GIF Layer">
-                                    <i class="fa-solid fa-image"></i>
-                                    <span>IMAGE</span>
-                                    <input type="file" id="merge-image-upload" accept="image/*,image/gif" hidden>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Merge Image Size Adjuster (shown only after image/GIF import) -->
-                        <div class="fx-card" id="merge-image-size-panel" style="display:none;">
-                            <div class="fx-title"><i class="fa-solid fa-expand-arrows-alt" style="color:var(--accent);"></i> Image Size</div>
-                            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Resize and position the imported image/GIF on the timeline scene.</p>
-                            <div class="control-group">
-                                <label>Fit Mode</label>
-                                <select id="merge-img-fit" class="input-field styled-select">
-                                    <option value="cover">Cover (Fill)</option>
-                                    <option value="contain">Contain (Fit)</option>
-                                    <option value="fill">Stretch</option>
-                                    <option value="custom">Custom Size</option>
-                                </select>
-                            </div>
-                            <div id="merge-img-custom-size" style="display:none;">
-                                <div class="control-group">
-                                    <div class="flex-spaced">
-                                        <label>Width</label>
-                                        <span id="merge-img-w-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
-                                    </div>
-                                    <input type="range" id="merge-img-width" min="10" max="200" value="100">
-                                </div>
-                                <div class="control-group">
-                                    <div class="flex-spaced">
-                                        <label>Height</label>
-                                        <span id="merge-img-h-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
-                                    </div>
-                                    <input type="range" id="merge-img-height" min="10" max="200" value="100">
-                                </div>
-                                <div class="control-group">
-                                    <div class="flex-spaced">
-                                        <label>Horizontal Position</label>
-                                        <span id="merge-img-x-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
-                                    </div>
-                                    <input type="range" id="merge-img-x" min="0" max="100" value="50">
-                                </div>
-                                <div class="control-group">
-                                    <div class="flex-spaced">
-                                        <label>Vertical Position</label>
-                                        <span id="merge-img-y-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
-                                    </div>
-                                    <input type="range" id="merge-img-y" min="0" max="100" value="50">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" id="merge-img-apply-btn" style="width:100%; margin-top:0.5rem;">
-                                <i class="fa-solid fa-check"></i> Apply 
-                            </button>
-                        </div>
-
-                        <div class="fx-card">
-                            <div class="fx-title">Project Tools</div>
-                            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 1rem;">Use the timeline to adjust clip timing and position. Select any clip to edit its properties.</p>
-                            <div class="tool-list">
-                                <div class="tool-item"><i class="fa-solid fa-scissors"></i> Split Clips</div>
-                                <div class="tool-item"><i class="fa-solid fa-arrows-left-right"></i> Drag to Reorder</div>
-                                <div class="tool-item"><i class="fa-solid fa-volume-high"></i> Audio Mix</div>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-accent" id="merge-export-btn" style="margin-top: 1rem; width: 100%;">
-                            <i class="fa-solid fa-file-video"></i> Download</button>
-                    </div>
-                </div>
-
-                <div id="tab-editor" class="tab-content active">
-                    <header class="sidebar-header" style="padding: 1.25rem 1.5rem 0.5rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <h6><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> Studio</h6>
-                            
-                        </div>
-                    </header>
-                    <div class="controls-wrapper" id="properties-panel">
-                        
-                        <!-- Empty State -->
-                        <div id="prop-empty" class="prop-section active">
-                            <div style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
-                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                                    <i class="fa-solid fa-mouse-pointer" style="font-size: 1.5rem; opacity: 0.5;"></i>
-                                </div>
-                                <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">No Selection</h4>
-                                <p style="font-size: 0.75rem; line-height: 1.5;">Select a clip on the timeline to reveal its properties and start editing.</p>
-                            </div>
-                        </div>
-                    
-                        <!-- MEDIA / BACKGROUND SECION (Pages) -->
-                        <div id="prop-media" class="prop-section">
-                            <div class="prop-header">
-                                <h3><i class="fa-solid fa-image"></i> Scene Background</h3>
-                                <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            
-                            <div class="control-group">
-                                <label>Background Type</label>
-                                <select id="bg-type" class="input-field styled-select">
-                                    <option value="color">Solid Color</option>
-                                    <option value="gradient">Gradient</option>
-                                    <option value="image">Image Upload</option>
-                                    <option value="video">Video Upload</option>
-                                </select>
-                            </div>
-
-                            <div class="control-group" id="bg-color-group">
-                                <label>Background Color</label>
-                                <div class="flex-row">
-                                    <input type="color" id="bg-color-val" value="#1a1a2e">
-                                    <input type="text" id="bg-color-hex" class="input-field" value="#1a1a2e" style="font-family: monospace; font-size: 0.75rem;">
-                                </div>
-                            </div>
-
-                            <div class="control-group" id="bg-grad-group" style="display:none;">
-                                <label>Gradient Palette</label>
-                                <div class="flex-row">
-                                    <input type="color" id="bg-grad-1" value="#10b981">
-                                    <input type="color" id="bg-grad-2" value="#3b82f6">
-                                </div>
-                                <div class="flex-spaced" style="margin-top: 0.5rem;">
-                                    <label>Angle: <span id="grad-angle-val">135</span>&deg;</label>
-                                    <input type="range" id="bg-grad-angle" min="0" max="360" value="135" style="width: 60%;">
-                                </div>
-                            </div>
-
-                            <div class="control-group" id="bg-upload-group" style="display:none;">
-                                <label class="btn btn-secondary file-upload-btn w-100">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Choose Media / GIF File
-                                    <input type="file" id="bg-file-upload" accept="image/*,image/gif,video/*" hidden>
-                                </label>
-                                <p id="bg-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
-                            </div>
-
-                            <!-- Image / GIF Size Adjuster (shown after upload) -->
-                            <div id="studio-image-size-panel" style="display:none; margin-top:0.75rem; padding-top:0.75rem; border-top: 1px solid var(--glass-border);">
-                                <div class="fx-title" style="font-size:0.65rem; margin-bottom:0.75rem;"><i class="fa-solid fa-up-right-and-down-left-from-center" style="color:var(--accent);"></i> ADJUST IMAGE SIZE</div>
-                                <div class="control-group">
-                                    <label>Fit Mode</label>
-                                    <select id="studio-img-fit" class="input-field styled-select">
-                                        <option value="cover">Cover (Fill)</option>
-                                        <option value="contain">Contain (Fit)</option>
-                                        <option value="fill">Stretch</option>
-                                        <option value="custom">Custom Size</option>
-                                    </select>
-                                </div>
-                                <div id="studio-img-custom-size" style="display:none;">
-                                    <div class="control-group">
-                                        <div class="flex-spaced">
-                                            <label>Width</label>
-                                            <span id="studio-img-w-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
-                                        </div>
-                                        <input type="range" id="studio-img-width" min="10" max="200" value="100">
-                                    </div>
-                                    <div class="control-group">
-                                        <div class="flex-spaced">
-                                            <label>Height</label>
-                                            <span id="studio-img-h-val" style="font-size:0.75rem;color:var(--accent);">100%</span>
-                                        </div>
-                                        <input type="range" id="studio-img-height" min="10" max="200" value="100">
-                                    </div>
-                                    <div class="control-group">
-                                        <div class="flex-spaced">
-                                            <label>Horizontal Position</label>
-                                            <span id="studio-img-x-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
-                                        </div>
-                                        <input type="range" id="studio-img-x" min="0" max="100" value="50">
-                                    </div>
-                                    <div class="control-group">
-                                        <div class="flex-spaced">
-                                            <label>Vertical Position</label>
-                                            <span id="studio-img-y-val" style="font-size:0.75rem;color:var(--accent);">50%</span>
-                                        </div>
-                                        <input type="range" id="studio-img-y" min="0" max="100" value="50">
-                                    </div>
-                                </div>
-                                <button class="btn btn-primary" id="studio-img-size-btn" style="width:100%; margin-top:0.25rem; font-size:0.75rem; padding:0.5rem;">
-                                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Adjust Image Size
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- TEXT SECTION -->
-                        <div id="prop-text" class="prop-section">
-                            <div class="prop-header">
-                                <h3><i class="fa-solid fa-font"></i> Text </h3>
-                                
-                            </div>
-                            
-                            <div class="text-editor-container">
-                                 <textarea id="text-content" placeholder="Type your text here..."></textarea>
-                                 
-                                 <div class="icon-picker" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border);">
-                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-star"><i class="fa-solid fa-star"></i></button>
-                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></button>
-                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-fire"><i class="fa-solid fa-fire"></i></button>
-                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></button>
-                                     <button class="btn btn-secondary icon-insert-btn" data-icon="fa-check"><i class="fa-solid fa-check"></i></button>
-                                 </div>
-                            </div>
-
-                            <div class="text-settings-scroll" style="margin-top: 1rem; flex-shrink: 0;">
-                                <div class="control-group">
-                                    <label>Typography</label>
-                                    <select id="text-font" class="input-field styled-select" style="margin-bottom: 0.5rem;">
-                                        <option value="'Outfit', sans-serif">Outfit (Modern)</option>
-                                        <option value="'Inter', sans-serif">Inter (Clean)</option>
-                                        <option value="'Playfair Display', serif">Playfair (Elegant)</option>
-                                        <option value="'Montserrat', sans-serif">Montserrat (Bold Sans)</option>
-                                        <option value="'Poppins', sans-serif">Poppins (Smooth)</option>
-                                        <option value="'Open Sans', sans-serif">Open Sans (Standard)</option>
-                                        <option value="'Lato', sans-serif">Lato (Friendly)</option>
-                                        <option value="'Cinzel', serif">Cinzel (Classic)</option>
-                                        <option value="'Lora', serif">Lora (Serif)</option>
-                                        <option value="'Bebas Neue', sans-serif">Bebas Neue (Impact)</option>
-                                        <option value="'Anton', sans-serif">Anton (Strong)</option>
-                                        <option value="'Pacifico', cursive">Pacifico (Script)</option>
-                                        <option value="'Lobster', cursive">Lobster (Retro)</option>
-                                        <option value="'Great Vibes', cursive">Great Vibes (Formal)</option>
-                                        <option value="'Space Mono', monospace">Space Mono (Tech)</option>
-                                        <option value="custom">Custom Font...</option>
-                                    </select>
-                                    <input type="text" id="text-font-custom" class="input-field" placeholder="Font Name (e.g. Arial)" style="display: none; margin-bottom: 0.5rem;">
-                                    <label class="btn btn-secondary w-100" style="font-size: 0.7rem; padding: 0.4rem; margin-top: 0.25rem;">
-                                        <i class="fa-solid fa-file-arrow-up"></i> LOAD FONT FILE
-                                        <input type="file" id="text-font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
-                                    </label>
-                                    
-                                    <div class="flex-spaced">
-                                        <div class="flex-row">
-                                            <input type="color" id="text-color" value="#ffffff" title="Text Color">
-                                            <input type="color" id="text-bg-color" value="#000000" title="Background Color">
-                                        </div>
-                                        <div class="toggle-group" style="flex: 1; margin-left: 0.75rem;">
-                                            <button class="style-btn" id="btn-bold"><i class="fa-solid fa-bold"></i></button>
-                                            <button class="style-btn" id="btn-italic"><i class="fa-solid fa-italic"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="flex-row" style="margin-top: 0.5rem; gap: 1rem;">
-                                        <div class="flex-row">
-                                            <input type="checkbox" id="text-bg-transparent">
-                                            <label for="text-bg-transparent" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Transparent BG</label>
-                                        </div>
-                                        <div class="flex-row">
-                                            <input type="checkbox" id="text-wrap">
-                                            <label for="text-wrap" style="margin: 0; font-size: 0.7rem; cursor: pointer;">Wrap Text</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <div class="flex-spaced">
-                                        <label>Font Size</label>
-                                        <span id="text-size-val" style="font-size: 0.75rem; color: var(--accent);">36px</span>
-                                    </div>
-                                    <input type="range" id="text-size" min="10" max="200" value="36">
-                                </div>
-
-                                <div class="control-group">
-                                    <label>Visual Effects</label>
-                                    <select id="text-effect" class="input-field styled-select">
-                                        <option value="none">Standard Style</option>
-                                        <option value="glow">Neon Glow</option>
-                                        <option value="shadow">Drop Shadow</option>
-                                        <option value="outline">Text Outline</option>
-                                        <option value="fade-scale">Fade + Scale</option>
-                                        <option value="staggered-slide">Staggered Slide</option>
-                                    </select>
-                                </div>
-
-                                <div id="vfx-intensity-group" class="control-group" style="display: none;">
-                                    <div class="flex-spaced">
-                                        <label id="vfx-intensity-label">Intensity</label>
-                                        <span id="vfx-intensity-val" style="font-size: 0.75rem; color: var(--accent);">10</span>
-                                    </div>
-                                    <input type="range" id="vfx-intensity" min="0" max="50" value="10">
-                                </div>
-
-                                <div class="control-group">
-                                    <label>Text Animation</label>
-                                    <select id="text-animation" class="input-field styled-select">
-                                        <option value="none">No Animation</option>
-                                        <option value="scroll-left">Scroll Left</option>
-                                        <option value="scroll-right">Scroll Right</option>
-                                        <option value="scroll-up">Scroll Up</option>
-                                        <option value="scroll-down">Scroll Down</option>
-                                        <option value="zoom-in">Zoom In</option>
-                                        <option value="zoom-out">Zoom Out</option>
-                                        <option value="unfold-reveal">Unfold Reveal</option>
-                                        <option value="marquee-left">Marquee Left</option>
-                                        <option value="marquee-right">Marquee Right</option>
-                                    </select>
-                                </div>
-
-                                <div id="effect-settings" class="control-group" style="display: none;">
-                                    <div class="flex-spaced">
-                                        <label>Effect Speed</label>
-                                        <span id="effect-speed-val" style="font-size: 0.75rem; color: var(--accent);">5</span>
-                                    </div>
-                                    <input type="range" id="effect-speed" min="1" max="20" value="5">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- AUDIO SECTION -->
-                        <div id="prop-audio" class="prop-section">
-                            <div class="prop-header">
-                                <h3><i class="fa-solid fa-music"></i> Audio Track</h3>
-                                <button class="close-props-btn" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            <div class="control-group">
-                                <label class="btn btn-secondary file-upload-btn w-100">
-                                    <i class="fa-solid fa-file-audio"></i> Choose Audio File
-                                    <input type="file" id="audio-file-upload" accept="audio/*" hidden>
-                                </label>
-                                <p id="audio-file-name" style="font-size: 0.7rem; margin-top:0.5rem; color: var(--accent); text-align: center;"></p>
-                            </div>
-                            <div class="control-group">
-                                <div class="flex-spaced">
-                                    <label>Master Volume</label>
-                                    <span id="audio-vol-val" style="font-size: 0.75rem; color: var(--accent);">100%</span>
-                                </div>
-                                <input type="range" id="audio-vol" min="0" max="100" value="100">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DESIGNER TAB -->
-                <div id="tab-designer" class="tab-content">
-                    <div class="designer-panel">
-                        <header class="sidebar-header" style="padding: 0 0 1rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <h6><i class="fa-solid fa-palette" style="color: var(--accent);"></i> Creative Designer</h6>
-                                
-                            </div>
-                            
-                        </header>
-
-                        <!-- BG OPTIONS -->
-                        <div class="fx-card">
-                            <div class="fx-title">Canvas Background</div>
-                            <div class="control-group">
-                                <select id="ds-bg-type" class="input-field styled-select">
-                                    <option value="solid">Solid Color</option>
-                                    <option value="gradient">Linear Gradient</option>
-                                </select>
-                            </div>
-                            <div class="flex-row" id="ds-bg-solid-ctrl">
-                                <input type="color" id="ds-bg-color" value="#6366f1">
-                                <span style="font-size: 0.7rem; color: var(--text-muted);">Solid Base</span>
-                            </div>
-                            <div class="flex-row" id="ds-bg-grad-ctrl" style="display:none; gap: 0.5rem;">
-                                <input type="color" id="ds-bg-grad1" value="#6366f1">
-                                <input type="color" id="ds-bg-grad2" value="#a855f7">
-                                <input type="range" id="ds-bg-angle" min="0" max="360" value="135" title="Angle">
-                            </div>
-                        </div>
-
-                        <!-- TEXT OPTIONS -->
-                        <div class="fx-card">
-                            <div class="fx-title">Text Engine</div>
-                            <textarea id="ds-text-content" class="input-field" placeholder="Graphic Text..." style="height: 60px; margin-bottom: 0.5rem;"></textarea>
-                            
-                            <div class="control-group">
-                                <select id="ds-font" class="input-field styled-select">
-                                    <option value="'Outfit'">Outfit (Modern)</option>
-                                    <option value="'Playfair Display'">Playfair (Elegant)</option>
-                                    <option value="'Inter'">Inter (Global)</option>
-                                    <option value="'Montserrat'">Montserrat (Bold Sans)</option>
-                                    <option value="'Poppins'">Poppins (Smooth)</option>
-                                    <option value="'Pacifico', cursive">Pacifico (Playful)</option>
-                                    <option value="'Bebas Neue', sans-serif">Bebas Neue (Bold)</option>
-                                    <option value="'Lobster', cursive">Lobster (Retro)</option>
-                                    <option value="'Anton', sans-serif">Anton (Strong)</option>
-                                    <option value="'Cinzel', serif">Cinzel (Classic)</option>
-                                    <option value="'Great Vibes', cursive">Great Vibes (Formal)</option>
-                                    <option value="'Space Mono', monospace">Monospace (Code)</option>
-                                    <option value="custom">Custom Font...</option>
-                                </select>
-                                <input type="text" id="ds-font-custom" class="input-field" placeholder="Font Name (e.g. Tahoma)" style="display: none; margin-top: 0.5rem;">
-                                <label class="btn btn-secondary w-100" style="font-size: 0.7rem; padding: 0.4rem; margin-top: 0.5rem;">
-                                    <i class="fa-solid fa-file-arrow-up"></i> LOAD FONT FILE
-                                    <input type="file" id="ds-font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
-                                </label>
-                            </div>
-
-                            <div class="flex-spaced" style="margin-bottom: 0.5rem;">
-                                <div class="toggle-group" style="flex: 1;">
-                                    <button class="style-btn" id="ds-btn-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-                                    <button class="style-btn" id="ds-btn-italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-                                    <button class="style-btn" id="ds-btn-underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
-                                </div>
-                            </div>
-
-                            <div class="control-group">
-                                <div class="flex-spaced">
-                                    <label>Font Size</label>
-                                    <span id="ds-font-size-val" style="font-size: 0.75rem; color: var(--accent);">48px</span>
-                                </div>
-                                <input type="range" id="ds-font-size" min="10" max="300" value="48">
-                            </div>
-
-                            <div class="control-group">
-                                <div class="flex-row">
-                                    <input type="checkbox" id="ds-text-wrap" checked>
-                                    <label for="ds-text-wrap" style="margin: 0; font-size: 0.75rem; cursor: pointer;">Wrap Text</label>
-                                </div>
-                            </div>
-
-                            <div class="flex-row">
-                                <div class="control-group" style="flex: 1;">
-                                    <label>Text Color</label>
-                                    <input type="color" id="ds-text-color" value="#ffffff" style="width: 100%;">
-                                </div>
-                                <div class="control-group" style="flex: 1;">
-                                    <label>Text BG</label>
-                                    <input type="color" id="ds-text-bg" value="#000000" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FONT EFFECTS -->
-                        <div class="fx-card">
-                            <div class="fx-title">Advanced FX</div>
-                            <div class="control-group">
-                                <div class="flex-spaced"><label>Shadow</label><input type="range" id="ds-fx-shadow" min="0" max="50" value="0"></div>
-                                <div class="flex-spaced"><label>Blur</label><input type="range" id="ds-fx-blur" min="0" max="20" value="0"></div>
-                                <div class="flex-spaced"><label>Neon Glow</label><input type="range" id="ds-fx-glow" min="0" max="40" value="0"></div>
-                            </div>
-                        </div>
-
-                        <!-- IMAGE IMPORT & ADJUSTMENTS -->
-                        <div class="fx-card">
-                            <div class="fx-title">Image Assets</div>
-                            <label class="btn btn-primary w-100" style="margin-bottom: 1.5rem;">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> IMPORT IMAGE
-                                <input type="file" id="ds-image-upload" accept="image/*" hidden>
-                            </label>
-
-                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6; margin-top: 1rem;">IMAGE FRAME</div>
-                            <div class="filter-selector-grid" style="grid-template-columns: repeat(5, 1fr);">
-                                <button class="frame-sel-btn active" data-frame="square" title="Square"><i class="fa-solid fa-square"></i></button>
-                                <button class="frame-sel-btn" data-frame="circle" title="Circle"><i class="fa-solid fa-circle"></i></button>
-                                <button class="frame-sel-btn" data-frame="rounded" title="Rounded"><i class="fa-solid fa-square-plus"></i></button>
-                                <button class="frame-sel-btn" data-frame="hexagon" title="Hexagon"><i class="fa-solid fa-shapes"></i></button>
-                                <button class="frame-sel-btn" data-frame="heart" title="Heart"><i class="fa-solid fa-heart"></i></button>
-                            </div>
-
-                            <div class="fx-title" style="font-size: 0.6rem; opacity: 0.6; margin-top: 1rem;">Filter Selection</div>
-                            <div class="filter-selector-grid">
-                                <button class="filter-sel-btn active" data-filter="brightness"><i class="fa-solid fa-sun"></i> BRIGHT</button>
-                                <button class="filter-sel-btn" data-filter="contrast"><i class="fa-solid fa-circle-half-stroke"></i> CONTRAST</button>
-                                <button class="filter-sel-btn" data-filter="sharpness"><i class="fa-solid fa-wand-magic-sparkles"></i> SHARP</button>
-                                <button class="filter-sel-btn" data-filter="hue"><i class="fa-solid fa-droplet"></i> HUE</button>
-                                <button class="filter-sel-btn" data-filter="sketch"><i class="fa-solid fa-pencil"></i> SKETCH</button>
-                            </div>
-
-                            <div class="master-control-box">
-                                <div class="flex-spaced">
-                                    <label id="ds-master-label">BRIGHTNESS</label>
-                                    <span id="ds-master-val">100%</span>
-                                </div>
-                                <input type="range" id="ds-master-slider" min="0" max="200" value="100">
-                                <div class="slider-labels">
-                                    <span>MIN</span>
-                                    <span>MAX</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- POPULAR RATIOS -->
-                        <div class="fx-card">
-                            <div class="fx-title">Canvas Ratio</div>
-                            <div class="ratio-selector">
-                                <button class="ratio-btn active" data-ratio="9:16">9:16</button>
-                                <button class="ratio-btn" data-ratio="16:9">16:9</button>
-                                <button class="ratio-btn" data-ratio="1:1">1:1</button>
-                                <button class="ratio-btn" data-ratio="4:5">4:5</button>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-accent" id="ds-download-btn" style="margin-top: 1rem;">
-                            <i class="fa-solid fa-download"></i> DOWNLOAD DESIGN
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Sidebar Footer Actions Removed based on request -->
-            </aside>
-
-            <!-- Center/Right: Video Preview Panel -->
-            <main class="preview-area">
-                
-                
-                <div class="video-wrapper">
-                    <div id="dynamic-video-frame" class="video-frame">
-                        <!-- Background layer -->
-                        <div id="frame-bg" class="frame-layer"></div>
-                        <!-- Text/Objects layer -->
-                        <div id="frame-objects" class="frame-layer"></div>
-                    </div>
-                </div>
-            </main>
-        </div>
-
-        <!-- BOTTOM TIMELINE -->
-        <div class="bottom-timeline">
-            <div class="timeline-header">
-                <div class="tl-tools left">
-                    <button class="icon-btn" id="tl-play"><i class="fa-solid fa-play"></i></button>
-                    <span id="tl-time-counter" style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent);">00:00 / 00:20</span>
-                </div>
-                <div class="tl-tools center">
-                    <button class="btn btn-primary tl-add-btn" id="add-media-clip-btn" title="Add Scene"><i class="fa-solid fa-image"></i> <span>Scene</span></button>
-                    <button class="btn btn-primary tl-add-btn" id="add-text-clip-btn" title="Add Text"><i class="fa-solid fa-font"></i> <span>Text</span></button>
-                    <button class="btn btn-primary tl-add-btn" id="add-audio-clip-btn" title="Add Audio"><i class="fa-solid fa-music"></i> <span>Audio</span></button>
-                    <button class="btn btn-secondary tl-add-btn" id="tl-split-btn" title="Split Selected Clip" style="color: var(--accent); border-color: var(--accent);">
-                        <i class="fa-solid fa-scissors"></i> <span>Split</span>
-                    </button>
-                    <button class="btn btn-secondary tl-add-btn" id="tl-delete-btn" style="border-color: #ef4444; color: #ef4444; display: none;" title="Delete Selected Clip">
-                        <i class="fa-solid fa-trash-can"></i> <span>Delete</span>
-                    </button>
-                </div>
-                <div class="tl-tools right">
-                    <i class="fa-solid fa-minus" style="font-size:0.7rem; color: var(--text-muted);"></i>
-                    <input type="range" id="tl-zoom" min="20" max="150" value="50" style="width: 80px;">
-                    <i class="fa-solid fa-plus" style="font-size:0.7rem; color: var(--text-muted);"></i>
-                </div>
-            </div>
-
-            <div class="timeline-body">
-                <div class="track-labels">
-                    <div class="t-label">SCENES</div>
-                    <div class="t-label">TEXT</div>
-                    <div class="t-label">AUDIO</div>
-                </div>
-                
-                <div class="tracks-viewport" id="tracks-viewport">
-                    <div class="ruler-container" id="tl-ruler">
-                        <div class="playhead" id="playhead"></div>
-                        <div class="playhead-handle" id="playhead-handle"></div>
-                    </div>
-                    
-                    <div class="tracks-container">
-                        <div class="tl-track" id="track-media" data-track="media">
-                            <div class="track-grid"></div>
-                            <div class="track-content" id="content-media"></div>
-                        </div>
-                        <div class="tl-track" id="track-text" data-track="text">
-                            <div class="track-grid"></div>
-                            <div class="track-content" id="content-text"></div>
-                        </div>
-                        <div class="tl-track" id="track-audio" data-track="audio">
-                            <div class="track-grid"></div>
-                            <div class="track-content" id="content-audio"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+  <!-- EDITOR -->
+  <section class="editor" id="editorScreen">
+    <div class="topbar">
+      <button class="tb-btn" id="tbBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="tb-btn" id="tbImport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
+      <button class="tb-btn" id="tbUndo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
+      <button class="tb-btn" id="tbRedo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg></button>
+      <div class="tb-spacer"></div>
+      <div class="tb-title" id="tbTitle">Untitled</div>
+      <div class="tb-spacer"></div>
+      <button class="tb-btn" id="tbMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      <button class="tb-save" id="tbSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save</button>
     </div>
 
-    <!-- Render Overlay -->
-    <div id="generation-overlay" class="overlay hidden">
-        <div class="loader-content glass-panel" style="border-radius: 20px; padding: 3rem;">
-            <div class="spinner"></div>
-            <h2 id="generation-text" style="font-size: 1.2rem; font-weight: 700; margin-top: 1rem;">Rendering Project...</h2>
-            <p id="generation-p" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2rem;">Please keep this tab active for fastest rendering.</p>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div style="display: flex; gap: 1rem; width: 100%; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
-                <button class="btn btn-secondary hidden" id="close-overlay-btn" style="width: auto;">DONE</button>
-            </div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <div class="checkerboard" id="checkerboard"></div>
+      <canvas id="canvas"></canvas>
+      <canvas id="frameCanvas" style="position:absolute;top:0;left:0;transform-origin:0 0;pointer-events:none;"></canvas>
+      <div class="info-overlay">
+        <span><b id="infoSize">0×0</b></span>
+        <span id="infoFormat">—</span>
+        <span id="infoFileSize">—</span>
+      </div>
+      <div class="selection-marquee" id="selectionMarquee"></div>
+      <div class="crop-overlay" id="cropOverlay">
+        <div class="crop-box" id="cropBox">
+          <div class="crop-grid">
+            <div class="crop-grid-line h" style="top:33.33%"></div>
+            <div class="crop-grid-line h" style="top:66.66%"></div>
+            <div class="crop-grid-line v" style="left:33.33%"></div>
+            <div class="crop-grid-line v" style="left:66.66%"></div>
+          </div>
+          <div class="crop-handle nw" data-handle="nw"></div>
+          <div class="crop-handle n" data-handle="n"></div>
+          <div class="crop-handle ne" data-handle="ne"></div>
+          <div class="crop-handle e" data-handle="e"></div>
+          <div class="crop-handle se" data-handle="se"></div>
+          <div class="crop-handle s" data-handle="s"></div>
+          <div class="crop-handle sw" data-handle="sw"></div>
+          <div class="crop-handle w" data-handle="w"></div>
+          <div class="crop-size-label" id="cropSizeLabel">0 × 0</div>
         </div>
+        <div class="crop-toolbar">
+          <button class="crop-tb-btn cancel" id="cropCancel">Cancel</button>
+          <button class="crop-tb-btn rotate" id="cropRotate" title="Rotate 90°">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.4 2.6"/><polyline points="21 3 21 9 15 9"/></svg>
+          </button>
+          <button class="crop-tb-btn apply" id="cropApply">Apply</button>
+        </div>
+      </div>
+      <div class="compare-wrap" id="compareWrap">
+        <div class="compare-after" id="compareAfter"></div>
+        <div class="compare-line" id="compareLine"></div>
+        <div class="compare-handle" id="compareHandle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="compare-label before">BEFORE</div>
+        <div class="compare-label after">AFTER</div>
+      </div>
+      <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+        <div class="zoom-level" id="zoomLevel">100%</div>
+        <button class="zoom-btn" id="zoomOut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+        <button class="zoom-btn" id="zoomFit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+      </div>
+      <button class="fab" id="fabAuto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>Auto Remove</button>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="bottombar" id="bottombar">
+      <button class="bb-btn" data-tool="crop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>Crop</button>
+      <button class="bb-btn" data-tool="filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5"/><path d="M22 11l-6 10-3-6-6-3z"/></svg>Filter</button>
+      <button class="bb-btn" data-tool="frame"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>Frame</button>
+      <button class="bb-btn active" data-tool="brush"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.06 11.9l8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg>Brush</button>
+      <button class="bb-btn" data-tool="erase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-.8-.8-.8-2 0-2.8L14.8 1.4c.8-.8 2-.8 2.8 0l5 5c.8.8.8 2 0 2.8L11 20"/></svg>Erase</button>
+      <button class="bb-btn" data-tool="restore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Restore</button>
+      <button class="bb-btn" data-tool="magic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M3 21l9-9"/></svg>Magic</button>
+      <button class="bb-btn" data-tool="colorErase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.45 2.15a2.5 2.5 0 0 1 3.53 0l3.86 3.86a2.5 2.5 0 0 1 0 3.53l-8.48 8.48a1 1 0 0 1-.7.3H6v-4.7a1 1 0 0 1 .3-.7L14.78 4.4z"/><path d="M2 22h20"/></svg>Color</button>
+      <button class="bb-btn" data-tool="select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Select</button>
+      <button class="bb-btn" data-tool="auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>Auto</button>
+      <button class="bb-btn" data-tool="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>Compare</button>
+      <button class="bb-btn" data-tool="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+    </div>
+  </section>
+</div>
+
+<div class="brush-cursor" id="brushCursor"></div>
+<div class="loading" id="loading"><div class="spinner"></div><div class="loading-text" id="loadingText">Processing...</div><div class="loading-sub" id="loadingSub">This may take a moment</div></div>
+<div class="toast" id="toast"></div>
+<div class="drop-zone" id="dropZone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="drop-zone-text">Drop image to open</div></div>
+<div class="panel-backdrop" id="panelBackdrop"></div>
+
+<!-- Brush Panel -->
+<div class="panel" id="panelBrush">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Brush Settings</div>
+  <div class="segmented" id="brushMode">
+    <button class="seg-btn active" data-mode="erase">Erase</button>
+    <button class="seg-btn" data-mode="restore">Restore</button>
+  </div>
+  <div class="slider-group"><div class="slider-label"><span>Size</span><span class="val" id="valSize">40</span></div><input type="range" id="brushSize" min="2" max="300" value="40" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Hardness</span><span class="val" id="valHardness">80%</span></div><input type="range" id="brushHardness" min="0" max="100" value="80" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Opacity</span><span class="val" id="valOpacity">100%</span></div><input type="range" id="brushOpacity" min="1" max="100" value="100" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Feather</span><span class="val" id="valFeather">10</span></div><input type="range" id="brushFeather" min="0" max="100" value="10" /></div>
+  <button class="action-btn" id="brushDone">Done</button>
+</div>
+
+<!-- Selection Panel -->
+<div class="panel" id="panelSelect">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Selection Tools</div>
+  <div class="grid-3">
+    <button class="tool-card active" data-sel="freehand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17s3-4 6-4 4 6 8 6 4-4 4-4"/></svg>Freehand</button>
+    <button class="tool-card" data-sel="rect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>Rectangle</button>
+    <button class="tool-card" data-sel="ellipse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="7"/></svg>Ellipse</button>
+    <button class="tool-card" data-sel="polygon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 19 20 5 20 2 8.5"/></svg>Polygon</button>
+    <button class="tool-card" data-sel="lasso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2"><path d="M7 22a5 5 0 0 1-2-4"/></svg>Lasso</button>
+    <button class="tool-card" data-sel="smart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>Smart</button>
+  </div>
+  <div class="slider-group" style="margin-top:18px"><div class="slider-label"><span>Tolerance</span><span class="val" id="valTolerance">Medium</span></div><input type="range" id="selTolerance" min="0" max="100" value="50" /></div>
+  <div class="grid-2" style="margin-top:8px">
+    <button class="action-btn secondary" id="selInvert">Invert</button>
+    <button class="action-btn secondary" id="selAll">Select All</button>
+    <button class="action-btn secondary" id="selClear">Clear</button>
+    <button class="action-btn" id="selApply">Apply to Mask</button>
+  </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="panel" id="panelFilter">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Filters</div>
+  <div class="filter-grid" id="filterGrid"></div>
+  <div class="slider-group"><div class="slider-label"><span>Brightness</span><span class="val" id="valBright">0</span></div><input type="range" id="adjBright" min="-100" max="100" value="0" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Contrast</span><span class="val" id="valContrast">0</span></div><input type="range" id="adjContrast" min="-100" max="100" value="0" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Saturation</span><span class="val" id="valSat">0</span></div><input type="range" id="adjSat" min="-100" max="100" value="0" /></div>
+  <div class="grid-2">
+    <button class="action-btn secondary" id="filterReset">Reset</button>
+    <button class="action-btn" id="filterApply">Apply</button>
+  </div>
+</div>
+
+<!-- FRAME PANEL -->
+<div class="panel" id="panelFrame">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Frames</div>
+  <div class="frame-grid" id="frameGrid"></div>
+  <div class="slider-group" style="margin-top:16px"><div class="slider-label"><span>Frame Thickness</span><span class="val" id="valFrameThick">20</span></div><input type="range" id="frameThick" min="5" max="100" value="20" /></div>
+  <div class="slider-group"><div class="slider-label"><span>Corner Radius</span><span class="val" id="valFrameRadius">0</span></div><input type="range" id="frameRadius" min="0" max="100" value="0" /></div>
+  <div class="grid-2">
+    <button class="action-btn secondary" id="frameRemove">Remove Frame</button>
+    <button class="action-btn" id="frameApply">Apply Frame</button>
+  </div>
+</div>
+
+<!-- CROP PANEL -->
+<div class="panel" id="panelCrop">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Crop &amp; Rotate</div>
+  <div class="slider-label" style="margin-bottom:8px"><span>Aspect Ratio</span></div>
+  <div class="segmented" id="cropRatio">
+    <button class="seg-btn active" data-ratio="free">Free</button>
+    <button class="seg-btn" data-ratio="1:1">1:1</button>
+    <button class="seg-btn" data-ratio="4:3">4:3</button>
+    <button class="seg-btn" data-ratio="16:9">16:9</button>
+    <button class="seg-btn" data-ratio="3:2">3:2</button>
+    <button class="seg-btn" data-ratio="9:16">9:16</button>
+  </div>
+  <div class="grid-3" style="margin-top:8px">
+    <button class="action-btn secondary" id="cropRotateLeft">↺ Rotate Left</button>
+    <button class="action-btn secondary" id="cropFlipH">↔ Flip</button>
+    <button class="action-btn secondary" id="cropReset">Reset</button>
+  </div>
+  <button class="action-btn" id="cropStart">Start Cropping</button>
+</div>
+
+<!-- Export Panel -->
+<div class="panel" id="panelExport">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Export Image</div>
+  <div class="slider-label" style="margin-bottom:8px"><span>Format</span></div>
+  <div class="segmented" id="exportFormat">
+    <button class="seg-btn active" data-fmt="png">PNG</button>
+    <button class="seg-btn" data-fmt="webp">WebP</button>
+    <button class="seg-btn" data-fmt="jpeg">JPEG</button>
+  </div>
+  <div class="slider-label" style="margin-bottom:8px"><span>Quality</span></div>
+  <div class="segmented" id="exportQuality">
+    <button class="seg-btn" data-q="original">Original</button>
+    <button class="seg-btn active" data-q="high">High</button>
+    <button class="seg-btn" data-q="medium">Medium</button>
+    <button class="seg-btn" data-q="low">Low</button>
+  </div>
+  <div class="slider-label" style="margin-bottom:8px"><span>Background Preview</span></div>
+  <div class="segmented" id="bgPreview">
+    <button class="seg-btn active" data-bg="checker">Checker</button>
+    <button class="seg-btn" data-bg="white">White</button>
+    <button class="seg-btn" data-bg="black">Black</button>
+    <button class="seg-btn" data-bg="gray">Gray</button>
+  </div>
+  <button class="action-btn" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+</div>
+
+<!-- Menu Panel -->
+<div class="panel" id="panelMenu">
+  <div class="panel-handle"></div>
+  <div class="panel-title">Menu</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <button class="action-btn secondary" id="menuRotate">🔄 Rotate 90°</button>
+    <button class="action-btn secondary" id="menuFlipH">↔️ Flip Horizontal</button>
+    <button class="action-btn secondary" id="menuFlipV">↕️ Flip Vertical</button>
+    <button class="action-btn secondary" id="menuReset">↩️ Reset Image</button>
+    <button class="action-btn secondary" id="menuResetMask">🎭 Reset AI Mask</button>
+    <button class="action-btn secondary" id="menuClearBg">🧹 Clear Background</button>
+    <button class="action-btn secondary" id="menuRestoreOrig">📷 Restore Original</button>
+    <button class="action-btn secondary" id="menuTheme">🌓 Toggle Theme</button>
+    <button class="action-btn danger" id="menuDiscard">🗑️ Discard &amp; Exit</button>
+  </div>
+</div>
+
+
+
+<script src="script.js"></script></body></html>
